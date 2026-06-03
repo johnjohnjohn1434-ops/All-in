@@ -3,291 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>UNO PRO | Advanced Dealing Arena</title>
+    <title>UNO PRO | Cinema Mode</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&display=swap');
         
-        :root {
-            --neon-purple: #a855f7;
-            --deep-bg: #0f172a;
-        }
-
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: radial-gradient(circle at center, #1e1b4b, #0f172a);
-            color: #ffffff;
-            height: 100vh;
+            background: #0f172a;
+            color: #fff;
+            margin: 0;
             overflow: hidden;
-            touch-action: manipulation;
+            height: 100vh;
         }
 
-        /* 🔄 ROTATION HINT FOR MOBILE */
-        @media screen and (orientation: portrait) and (max-width: 768px) {
-            #rotate-hint { display: flex !important; }
+        /* 🎬 Landscape Container (Movie Style) */
+        #game-container {
+            width: 100vh;
+            height: 100vw;
+            transform: rotate(90deg);
+            transform-origin: bottom left;
+            position: absolute;
+            top: -100vw;
+            left: 0;
+            background: radial-gradient(circle at center, #312e81 0%, #0f172a 100%);
+            display: flex;
+            flex-direction: column;
         }
 
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        
-        /* 🃏 CARD ANIMATIONS */
-        .card-deal {
-            animation: flyIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-
-        @keyframes flyIn {
-            from { transform: translate(-50%, -150%) rotate(0deg); opacity: 0; }
-            to { transform: translate(0, 0) rotate(var(--r)); opacity: 1; }
+        /* Portrait-la irukkum pothu normal-ah kaata */
+        @media (orientation: landscape) {
+            #game-container {
+                width: 100vw;
+                height: 100vh;
+                transform: none;
+                position: static;
+            }
         }
 
         .uno-card {
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform 0.2s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
-
-        .uno-card:hover {
-            transform: translateY(-40px) scale(1.15) rotate(0deg) !important;
-            z-index: 100;
-            filter: brightness(1.2) drop-shadow(0 0 15px var(--card-color));
-        }
-
-        /* NEON UI */
-        .neon-border { border: 2px solid var(--neon-purple); box-shadow: 0 0 15px var(--neon-purple); }
+        .uno-card:hover { transform: translateY(-20px) scale(1.1); }
+        .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
-<body class="flex flex-col items-center">
+<body>
 
     <!-- 🔊 SOUNDS -->
-    <audio id="deal-sfx" src="https://assets.mixkit.co/active_storage/sfx/2043/2043-preview.mp3"></audio>
-    <audio id="click-sfx" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
+    <audio id="card-sfx" src="https://assets.mixkit.co/active_storage/sfx/2043/2043-preview.mp3"></audio>
 
-    <!-- 📱 ROTATION OVERLAY -->
-    <div id="rotate-hint" class="hidden fixed inset-0 z-[1000] bg-indigo-950 flex flex-col items-center justify-center text-center p-10">
-        <div class="animate-bounce mb-6 text-6xl text-purple-400">
-            <i class="fas fa-mobile-alt rotate-90"></i>
-        </div>
-        <h2 class="text-2xl font-black">Landscape Mode recommended</h2>
-        <p class="text-sm text-gray-400 mt-2">Rotate your phone for the best Arena experience.</p>
-    </div>
-
-    <!-- 🔑 LOGIN SCREEN -->
-    <div id="login-screen" class="fixed inset-0 z-[500] flex items-center justify-center bg-[#020617] p-6">
-        <div class="glass p-10 rounded-[50px] w-full max-w-sm text-center border-purple-500/20">
-            <div class="text-5xl mb-6 text-purple-500 animate-pulse"><i class="fas fa-meteor"></i></div>
-            <h1 class="text-4xl font-black mb-2 tracking-tighter">UNO <span class="text-purple-500">ARENA</span></h1>
-            <p class="text-gray-500 text-xs mb-8 uppercase tracking-widest">Next-Gen Card Battle</p>
-            <input type="text" id="usernameInput" placeholder="Enter Pilot Name" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl mb-4 outline-none focus:ring-2 focus:ring-purple-500 text-center font-bold">
-            <button onclick="login()" class="w-full bg-purple-600 py-4 rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-purple-900/40 active:scale-95 transition-all">Launch Game</button>
-        </div>
-    </div>
-
-    <!-- 🏠 HOME HUB -->
-    <div id="home-screen" class="hidden w-full h-full flex flex-col p-8">
-        <div class="flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-gradient-to-tr from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center font-black text-xl">U</div>
-                <h2 id="display-name" class="text-2xl font-black">Pilot</h2>
-            </div>
-            <button class="w-12 h-12 glass rounded-xl flex items-center justify-center"><i class="fas fa-user-friends"></i></button>
-        </div>
-
-        <div class="flex-grow flex items-center justify-center gap-10">
-            <div onclick="showBotMenu()" class="glass p-10 rounded-[40px] w-64 text-center cursor-pointer hover:border-blue-500/50 transition-all group">
-                <i class="fas fa-microchip text-5xl mb-4 text-blue-400 group-hover:scale-125 transition-transform"></i>
-                <h3 class="font-black text-lg">AI CHALLENGE</h3>
-            </div>
-            <div onclick="showMultiMenu()" class="glass p-10 rounded-[40px] w-64 text-center cursor-pointer hover:border-purple-500/50 transition-all group">
-                <i class="fas fa-globe text-5xl mb-4 text-purple-400 group-hover:scale-125 transition-transform"></i>
-                <h3 class="font-black text-lg">CUSTOM ROOM</h3>
+    <div id="game-container">
+        
+        <!-- 1. LOGIN SCREEN (Visible only if no user in localStorage) -->
+        <div id="login-screen" class="absolute inset-0 z-[100] flex items-center justify-center bg-[#020617]">
+            <div class="glass p-10 rounded-[40px] w-80 text-center">
+                <h1 class="text-2xl font-black mb-6 tracking-tighter text-purple-400">UNO LOGIN</h1>
+                <input type="text" id="usernameInput" placeholder="Nick Name" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl mb-4 outline-none">
+                <button onclick="saveUser()" class="w-full bg-purple-600 py-3 rounded-xl font-black uppercase text-sm">Save & Enter</button>
             </div>
         </div>
-    </div>
 
-    <!-- 🃏 ARENA -->
-    <div id="arena" class="hidden fixed inset-0 flex flex-col justify-between p-6 bg-[#030712]">
-        <!-- Top: Opponents & Leave -->
-        <div class="flex justify-between items-start">
-            <button onclick="confirmLeave()" class="w-12 h-12 glass rounded-xl flex items-center justify-center text-red-400 hover:bg-red-500/10"><i class="fas fa-sign-out-alt"></i></button>
-            <div id="bot-row" class="flex gap-4"></div>
-            <div class="w-12"></div> <!-- Spacer -->
-        </div>
-
-        <!-- Center: Cards -->
-        <div class="flex justify-center items-center gap-20">
-            <div id="deck" onclick="playerDraw()" class="w-24 h-36 bg-gradient-to-br from-purple-800 to-indigo-950 rounded-2xl border-2 border-white/20 flex flex-col items-center justify-center cursor-pointer relative group">
-                <span class="font-black text-xs bg-white text-purple-900 px-2 rounded mb-2">UNO</span>
-                <div class="absolute inset-0 bg-white/5 group-hover:opacity-0 transition-opacity rounded-2xl"></div>
+        <!-- 2. HOME SCREEN (Normal Vertical style elements inside landscape) -->
+        <div id="home-screen" class="hidden flex-1 p-8">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-2xl font-black">Hi, <span id="user-display" class="text-purple-400">Gamer</span></h2>
+                <div class="flex gap-4">
+                    <button class="glass w-12 h-12 rounded-xl flex items-center justify-center"><i class="fas fa-user-plus text-purple-400"></i></button>
+                    <button onclick="localStorage.clear(); location.reload();" class="glass w-12 h-12 rounded-xl flex items-center justify-center"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
             </div>
-            
-            <div id="discard-pile" class="w-24 h-36 rounded-2xl border-4 border-white flex items-center justify-center text-4xl font-black shadow-2xl transition-all"></div>
-        </div>
 
-        <!-- Bottom: Player Hand -->
-        <div class="w-full flex flex-col items-center">
-            <p id="turn-msg" class="text-[10px] font-black uppercase tracking-[0.4em] mb-4 text-purple-400">Waiting for Deal...</p>
-            <div id="hand-container" class="flex justify-center gap-[-20px] h-40 w-full overflow-visible"></div>
-        </div>
-    </div>
-
-    <!-- 🤖 BOT SELECT -->
-    <div id="bot-menu" class="hidden fixed inset-0 z-[600] bg-black/80 backdrop-blur-md flex items-center justify-center">
-        <div class="glass p-8 rounded-[40px] text-center w-80">
-            <h3 class="font-black mb-6">NUMBER OF ENEMIES</h3>
-            <div class="grid grid-cols-4 gap-2 mb-6">
-                <button onclick="startMatch(1)" class="p-3 glass rounded-lg hover:bg-purple-600 font-bold">1</button>
-                <button onclick="startMatch(2)" class="p-3 glass rounded-lg hover:bg-purple-600 font-bold">2</button>
-                <button onclick="startMatch(3)" class="p-3 glass rounded-lg hover:bg-purple-600 font-bold">3</button>
-                <button onclick="startMatch(4)" class="p-3 glass rounded-lg hover:bg-purple-600 font-bold">4</button>
+            <div class="grid grid-cols-2 gap-6 max-w-2xl mx-auto">
+                <div onclick="openBotConfig()" class="glass p-8 rounded-3xl text-center cursor-pointer hover:bg-white/5">
+                    <i class="fas fa-robot text-3xl text-blue-400 mb-4"></i>
+                    <p class="font-black">VS BOTS</p>
+                </div>
+                <div onclick="alert('Room Code: X-9901\nWaiting for friends...')" class="glass p-8 rounded-3xl text-center cursor-pointer hover:bg-white/5">
+                    <i class="fas fa-wifi text-3xl text-purple-400 mb-4"></i>
+                    <p class="font-black">MULTIPLAYER</p>
+                </div>
             </div>
-            <button onclick="closeMenus()" class="text-xs text-gray-500 font-bold uppercase">Back</button>
+        </div>
+
+        <!-- 3. BOT SELECTOR OVERLAY -->
+        <div id="bot-config" class="hidden absolute inset-0 z-50 bg-black/80 flex items-center justify-center">
+            <div class="glass p-8 rounded-3xl text-center w-96">
+                <h3 class="font-black mb-6">SELECT COMPUTER BOTS</h3>
+                <div class="flex flex-wrap justify-center gap-3 mb-8">
+                    <button onclick="startMatch(1)" class="w-12 h-12 glass rounded-lg hover:bg-purple-600 font-bold">1</button>
+                    <button onclick="startMatch(2)" class="w-12 h-12 glass rounded-lg hover:bg-purple-600 font-bold">2</button>
+                    <button onclick="startMatch(3)" class="w-12 h-12 glass rounded-lg hover:bg-purple-600 font-bold">3</button>
+                    <button onclick="startMatch(4)" class="w-12 h-12 glass rounded-lg hover:bg-purple-600 font-bold">4</button>
+                </div>
+                <button onclick="hideBotConfig()" class="text-xs text-gray-400 uppercase font-bold">Back</button>
+            </div>
+        </div>
+
+        <!-- 4. ARENA (Real Landscape Play) -->
+        <div id="game-arena" class="hidden flex-1 flex flex-col justify-between p-4">
+            <!-- Opponents -->
+            <div id="bot-heads" class="flex gap-4 justify-center pt-2"></div>
+
+            <!-- Table -->
+            <div class="flex justify-center items-center gap-16">
+                <div onclick="drawCard()" class="w-20 h-28 bg-red-600 rounded-xl border-2 border-white/30 flex items-center justify-center font-black text-xs shadow-lg cursor-pointer active:scale-90">UNO</div>
+                <div id="discard-pile" class="w-24 h-32 rounded-xl border-4 border-white flex items-center justify-center text-3xl font-black shadow-2xl"></div>
+            </div>
+
+            <!-- Hand -->
+            <div id="player-hand" class="flex justify-center gap-2 overflow-x-auto h-36 items-end pb-2"></div>
         </div>
     </div>
 
     <script>
         const colors = ["#ef4444", "#22c55e", "#3b82f6", "#eab308"];
+        const colorNames = ["Red", "Green", "Blue", "Yellow"];
         const values = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-        
-        let pilotName = "";
-        let pHand = [];
-        let bHands = [];
-        let centerCard = {};
-        let turn = 0; // 0: Player
-        let botCount = 0;
 
-        function login() {
-            pilotName = document.getElementById('usernameInput').value || "Pilot";
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('home-screen').classList.remove('hidden');
-            document.getElementById('display-name').innerText = pilotName;
-            requestFullscreen();
+        let user = "";
+        let pHand = [], bDecks = [], top = {}, turn = 0, bots = 0;
+
+        // 💾 LOCAL STORAGE LOGIN
+        window.onload = () => {
+            const saved = localStorage.getItem('uno_user');
+            if(saved) {
+                user = saved;
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('home-screen').classList.remove('hidden');
+                document.getElementById('user-display').innerText = user;
+            }
+        };
+
+        function saveUser() {
+            const input = document.getElementById('usernameInput').value;
+            if(!input) return;
+            localStorage.setItem('uno_user', input);
+            user = input;
+            location.reload();
         }
 
-        function requestFullscreen() {
-            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
-        }
-
-        function showBotMenu() { document.getElementById('bot-menu').classList.remove('hidden'); }
-        function closeMenus() { document.getElementById('bot-menu').classList.add('hidden'); }
-
-        function confirmLeave() {
-            if(confirm("Abandon current mission and return to hub?")) location.reload();
-        }
+        function openBotConfig() { document.getElementById('bot-config').classList.remove('hidden'); }
+        function hideBotConfig() { document.getElementById('bot-config').classList.add('hidden'); }
 
         function startMatch(count) {
-            botCount = count;
-            closeMenus();
+            bots = count;
+            document.getElementById('bot-config').classList.add('hidden');
             document.getElementById('home-screen').classList.add('hidden');
-            document.getElementById('arena').classList.remove('hidden');
+            document.getElementById('game-arena').classList.remove('hidden');
             
-            pHand = [];
-            bHands = [];
-            
-            // Animation for Dealing
-            dealAnimation();
+            pHand = Array.from({length: 7}, gen);
+            bDecks = Array.from({length: bots}, () => Array.from({length: 7}, gen));
+            top = gen();
+            render();
         }
 
-        function dealAnimation() {
-            let cardsToDeal = 7;
-            let total = cardsToDeal * (botCount + 1);
-            let dealt = 0;
-
-            const interval = setInterval(() => {
-                if(dealt < cardsToDeal) pHand.push(generateCard());
-                else {
-                    let botIdx = Math.floor((dealt - cardsToDeal) / cardsToDeal);
-                    if(!bHands[botIdx]) bHands[botIdx] = [];
-                    bHands[botIdx].push(generateCard());
-                }
-                
-                document.getElementById('deal-sfx').currentTime = 0;
-                document.getElementById('deal-sfx').play();
-                render();
-                
-                dealt++;
-                if(dealt >= total) {
-                    clearInterval(interval);
-                    centerCard = generateCard();
-                    render();
-                    document.getElementById('turn-msg').innerText = "Your Turn";
-                }
-            }, 150);
-        }
-
-        function generateCard() {
-            const cIdx = Math.floor(Math.random()*colors.length);
-            return { color: colors[cIdx], val: values[Math.floor(Math.random()*values.length)], r: (Math.random()*10 - 5) + "deg" };
+        function gen() {
+            let r = Math.floor(Math.random() * 4);
+            return { c: colors[r], n: colorNames[r], v: values[Math.floor(Math.random()*10)] };
         }
 
         function render() {
-            // Discard Pile
-            const cp = document.getElementById('discard-pile');
-            if(centerCard.color) {
-                cp.style.backgroundColor = centerCard.color;
-                cp.innerText = centerCard.val;
-                cp.style.borderColor = 'white';
-            }
+            const dp = document.getElementById('discard-pile');
+            dp.style.backgroundColor = top.c;
+            dp.innerText = top.v;
 
-            // Bots
-            const botRow = document.getElementById('bot-row');
-            botRow.innerHTML = bHands.map((h, i) => `
-                <div class="glass p-3 rounded-2xl text-center min-w-[70px] ${turn === i+1 ? 'neon-border scale-110' : 'opacity-60'}">
-                    <p class="text-[8px] font-bold text-gray-500">BOT ${i+1}</p>
-                    <p class="font-black text-xl">${h.length}</p>
+            const bh = document.getElementById('bot-heads');
+            bh.innerHTML = bDecks.map((d, i) => `
+                <div class="glass p-2 rounded-xl text-center min-w-[60px] ${turn === i+1 ? 'border-purple-500 bg-purple-500/20' : ''}">
+                    <p class="text-[8px] opacity-50">BOT ${i+1}</p>
+                    <p class="font-black text-sm">${d.length}</p>
                 </div>
             `).join('');
 
-            // Player Hand
-            const container = document.getElementById('hand-container');
-            container.innerHTML = pHand.map((c, i) => `
-                <div onclick="playCard(${i})" 
-                     class="uno-card card-deal w-24 h-36 rounded-2xl border-2 border-white/30 flex flex-col justify-between p-3 font-black text-2xl" 
-                     style="background:${c.color}; --r:${c.r}; --card-color:${c.color}; margin-left: -40px;">
-                    <span class="text-xs text-left">${c.val}</span>
-                    <span class="text-center text-4xl mt-4">${c.val}</span>
+            const hand = document.getElementById('player-hand');
+            hand.innerHTML = pHand.map((c, i) => `
+                <div onclick="playCard(${i})" class="uno-card w-20 h-28 rounded-xl border-2 border-white/50 flex flex-col justify-between p-2 font-black text-xl shrink-0" style="background:${c.c}">
+                    <span class="text-[10px] text-left">${c.v}</span>
+                    <span class="text-center text-3xl">${c.v}</span>
+                    <span class="text-[10px] text-right opacity-20">${c.n[0]}</span>
                 </div>
             `).join('');
         }
 
         function playCard(i) {
             if(turn !== 0) return;
-            let c = pHand[i];
-            if(c.color === centerCard.color || c.val === centerCard.val) {
-                centerCard = c;
+            let card = pHand[i];
+            if(card.c === top.c || card.v === top.v) {
+                top = card;
                 pHand.splice(i, 1);
+                document.getElementById('card-sfx').play();
+                if(pHand.length === 0) { alert("WINNER: " + user); location.reload(); return; }
                 turn = 1;
                 render();
-                if(pHand.length === 0) alert("YOU WIN!");
-                else setTimeout(botLogic, 1000);
+                setTimeout(botMove, 1000);
             }
         }
 
-        function playerDraw() {
+        function drawCard() {
             if(turn !== 0) return;
-            pHand.push(generateCard());
+            pHand.push(gen());
             turn = 1;
             render();
-            setTimeout(botLogic, 1000);
+            setTimeout(botMove, 1000);
         }
 
-        function botLogic() {
-            let bIdx = turn - 1;
-            let deck = bHands[bIdx];
-            let m = deck.findIndex(c => c.color === centerCard.color || c.val === centerCard.val);
-
-            if(m > -1) {
-                centerCard = deck[m];
-                deck.splice(m, 1);
+        function botMove() {
+            let deck = bDecks[turn-1];
+            let idx = deck.findIndex(c => c.c === top.c || c.v === top.v);
+            if(idx > -1) {
+                top = deck[idx];
+                deck.splice(idx, 1);
             } else {
-                deck.push(generateCard());
+                deck.push(gen());
             }
-
-            if(deck.length === 0) alert("BOT " + turn + " WINS!");
-            
-            turn = turn >= botCount ? 0 : turn + 1;
+            if(deck.length === 0) { alert("WINNER: BOT " + turn); location.reload(); return; }
+            turn = (turn >= bots) ? 0 : turn + 1;
             render();
-            if(turn !== 0) setTimeout(botLogic, 1000);
-            else document.getElementById('turn-msg').innerText = "Your Turn";
+            if(turn !== 0) setTimeout(botMove, 1000);
         }
     </script>
 </body>
 </html>
+
