@@ -98,7 +98,7 @@
                     <input type="text" id="upTitle" placeholder="Asset Title Name" class="w-full bg-black border border-neutral-800 p-3 rounded-xl text-xs outline-none">
                     <input type="text" id="upUrl" placeholder="Paste Web URL Link (Optional)" class="w-full bg-black border border-neutral-800 p-3 rounded-xl text-xs outline-none">
                     <div class="p-4 border border-dashed border-neutral-800 rounded-xl text-center bg-black/30">
-                        <p class="text-[10px] text-indigo-400 font-bold mb-2">1-Min Video Display Secure Upload</p>
+                        <p class="text-[10px] text-emerald-400 font-bold mb-2">🚀 Engine Fixed: 1-Min Big Videos Allowed!</p>
                         <input type="file" id="upFile" class="text-[10px] text-gray-500">
                     </div>
                     <button onclick="handleUpload()" class="w-full bg-indigo-600 py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-indigo-500 transition-all">Publish Live</button>
@@ -148,16 +148,19 @@
     <script>
         let db = [];
         let dbInstance = null;
+        let activeUrls = []; // Keeps track of live generated URLs to prevent expiry blocks
 
-        // 🚀 DATABASE ENGINE: Open Secure Storage Engine
-        const request = indexedDB.open("CreativeFlowStudioDB", 2); // Upgraded database version
+        // 🚀 DATABASE ENGINE: Core Structure Re-vamp (Version 3)
+        const request = indexedDB.open("CreativeFlowStudioDB", 3);
+        
         request.onupgradeneeded = (e) => {
             let dbIdb = e.target.result;
             if (dbIdb.objectStoreNames.contains("assets")) {
-                dbIdb.deleteObjectStore("assets"); // Wipe old system format
+                dbIdb.deleteObjectStore("assets");
             }
             dbIdb.createObjectStore("assets", { keyPath: "id" });
         };
+
         request.onsuccess = (e) => {
             dbInstance = e.target.result;
             loadDataFromIndexedDB();
@@ -167,6 +170,7 @@
             const transaction = dbInstance.transaction(["assets"], "readonly");
             const store = transaction.objectStore("assets");
             const getAll = store.getAll();
+            
             getAll.onsuccess = () => {
                 db = getAll.result.reverse(); 
                 renderGrid(db);
@@ -185,13 +189,22 @@
             const grid = document.getElementById('asset-grid');
             grid.innerHTML = data.length ? '' : '<p class="col-span-full text-center text-gray-600 py-12 text-xs">The vault repository is currently empty.</p>';
             
+            // Clear previous revoke links to free up system cache memory safely
+            activeUrls.forEach(url => URL.revokeObjectURL(url));
+            activeUrls = [];
+
             data.forEach(item => {
-                // 🔥 FIX: Direct base64 string injection. This never expires on page reload or navigation!
-                let fileUrl = item.base64Data || item.url; 
+                let fileUrl = item.url;
+                
+                // 🔥 FIX: Check if raw binary object exists, compile secure working object link
+                if (item.fileBlob) {
+                    fileUrl = URL.createObjectURL(item.fileBlob);
+                    activeUrls.push(fileUrl); // Lock it live
+                }
 
                 let mediaPreview = '';
                 if(item.type === 'video') {
-                    mediaPreview = `<video src="${fileUrl}" controls preload="metadata" class="w-full aspect-video object-cover bg-black"></video>`;
+                    mediaPreview = `<video src="${fileUrl}" controls preload="auto" playsinline class="w-full aspect-video object-cover bg-black"></video>`;
                 } else if(item.type === 'photo') {
                     mediaPreview = `<div class="w-full h-64 bg-neutral-950 flex items-center justify-center"><img src="${fileUrl}" class="w-full h-full object-contain"></div>`;
                 } else {
@@ -210,7 +223,7 @@
                                 <p class="text-xs font-bold text-white truncate uppercase">${item.title}</p>
                                 <span class="text-[9px] text-gray-500 font-bold uppercase tracking-wider block mt-0.5">${item.type}</span>
                             </div>
-                            <a href="${fileUrl}" download="${item.title}" class="bg-indigo-600 hover:bg-indigo-500 text-white p-2.5 rounded-xl transition shadow-md flex items-center justify-center shrink-0">
+                            <a href="${fileUrl}" download="${item.title || 'download'}" target="_blank" class="bg-indigo-600 hover:bg-indigo-500 text-white p-2.5 rounded-xl transition shadow-md flex items-center justify-center shrink-0">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                             </a>
                         </div>
@@ -250,39 +263,29 @@
 
             if(!title) return alert("Please specify an asset identifier name.");
 
-            const saveToDatabase = (finalDataString) => {
-                const newItem = {
-                    id: Date.now(),
-                    type: type,
-                    title: title,
-                    url: urlInput || "",
-                    base64Data: finalDataString || ""
-                };
-
-                const transaction = dbInstance.transaction(["assets"], "readwrite");
-                const store = transaction.objectStore("assets");
-                const addReq = store.add(newItem);
-
-                addReq.onsuccess = () => {
-                    alert("Success: Asset video frame compiled and live!");
-                    document.getElementById('upTitle').value = '';
-                    document.getElementById('upUrl').value = '';
-                    document.getElementById('upFile').value = '';
-                    loadDataFromIndexedDB();
-                    showSection('home');
-                };
+            // 🔥 FIX: We store raw binary files directly. No string conversion crash block anymore!
+            const newItem = {
+                id: Date.now(),
+                type: type,
+                title: title,
+                url: urlInput || "",
+                fileBlob: file || null  
             };
 
-            if (urlInput) {
-                saveToDatabase("");
-            } else if (file) {
-                const reader = new FileReader();
-                // Safe binary stream conversion logic
-                reader.onload = (e) => saveToDatabase(e.target.result);
-                reader.readAsDataURL(file);
-            } else {
-                alert("Please add either a Web URL Link or browse a file source.");
-            }
+            const transaction = dbInstance.transaction(["assets"], "readwrite");
+            const store = transaction.objectStore("assets");
+            const addReq = store.add(newItem);
+
+            addReq.onsuccess = () => {
+                alert("Deployed Successfully: 1-Min Big Asset is now Live!");
+                document.getElementById('upTitle').value = '';
+                document.getElementById('upUrl').value = '';
+                document.getElementById('upFile').value = '';
+                loadDataFromIndexedDB();
+                showSection('home');
+            };
+            
+            addReq.onerror = () => alert("Database execution storage pipeline error.");
         }
 
         function searchAssets(val) {
