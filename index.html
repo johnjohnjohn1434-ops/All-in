@@ -96,8 +96,9 @@
                         <option value="sound">SOUND EFFECT</option>
                     </select>
                     <input type="text" id="upTitle" placeholder="Asset Title Name" class="w-full bg-black border border-neutral-800 p-3 rounded-xl text-xs outline-none">
-                    <input type="text" id="upUrl" placeholder="Paste Direct Link OR Use File below" class="w-full bg-black border border-neutral-800 p-3 rounded-xl text-xs outline-none">
+                    <input type="text" id="upUrl" placeholder="Paste Web URL Link (Optional)" class="w-full bg-black border border-neutral-800 p-3 rounded-xl text-xs outline-none">
                     <div class="p-4 border border-dashed border-neutral-800 rounded-xl text-center bg-black/30">
+                        <p class="text-[10px] text-indigo-400 font-bold mb-2">Supports Big Files up to 1-Min Video!</p>
                         <input type="file" id="upFile" class="text-[10px] text-gray-500">
                     </div>
                     <button onclick="handleUpload()" class="w-full bg-indigo-600 py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-indigo-500 transition-all">Publish Live</button>
@@ -145,12 +146,32 @@
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('cf_studio_hub')) || [
-            { id: 1, type: 'video', title: 'Cyberpunk City Drive', url: 'https://assets.mixkit.co/videos/preview/mixkit-neon-light-from-a-building-reflected-in-the-water-43187-large.mp4' },
-            { id: 2, type: 'music', title: 'Hardcore Phonk Beat', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-            { id: 3, type: 'photo', title: 'Futuristic Hypercar', url: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?w=800' },
-            { id: 4, type: 'sound', title: 'Cinematic Drop Effect', url: 'https://actions.google.com/sounds/v1/science_fiction/alien_beacon.ogg' }
-        ];
+        let db = [];
+        let currentSection = 'home';
+        let dbInstance = null;
+
+        // 🚀 DATABASE ENGINE: Initialize IndexedDB for BIG Files storage
+        const request = indexedDB.open("CreativeFlowStudioDB", 1);
+        request.onupgradeneeded = (e) => {
+            let dbIdb = e.target.result;
+            if (!dbIdb.objectStoreNames.contains("assets")) {
+                dbIdb.createObjectStore("assets", { keyPath: "id" });
+            }
+        };
+        request.onsuccess = (e) => {
+            dbInstance = e.target.result;
+            loadDataFromIndexedDB();
+        };
+
+        function loadDataFromIndexedDB() {
+            const transaction = dbInstance.transaction(["assets"], "readonly");
+            const store = transaction.objectStore("assets");
+            const getAll = store.getAll();
+            getAll.onsuccess = () => {
+                db = getAll.result.reverse(); // Latest uploads first
+                renderGrid(db);
+            };
+        }
 
         const bannerData = {
             home: { tag: 'CREATIVE HUB', title: 'The Asset Multiverse', desc: 'Browse latest premium assets curated by studio experts.', img: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1600' },
@@ -160,24 +181,27 @@
             sound: { tag: 'SFX ENGINE', title: 'Hollywood Sound Effects', desc: 'High definition sound impacts, atmospheric filters, explosions, and rains.', img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1600' }
         };
 
-        window.onload = () => renderGrid(db);
-
         function renderGrid(data) {
             const grid = document.getElementById('asset-grid');
             grid.innerHTML = data.length ? '' : '<p class="col-span-full text-center text-gray-600 py-12 text-xs">The vault repository is currently empty.</p>';
             
             data.forEach(item => {
+                let fileUrl = item.url;
+                // If it's a dynamic raw file blob object, generate working live URL
+                if (item.fileBlob) {
+                    fileUrl = URL.createObjectURL(item.fileBlob);
+                }
+
                 let mediaPreview = '';
                 if(item.type === 'video') {
-                    mediaPreview = `<video src="${item.url}" controls class="w-full aspect-video object-cover bg-black"></video>`;
+                    mediaPreview = `<video src="${fileUrl}" controls class="w-full aspect-video object-cover bg-black"></video>`;
                 } else if(item.type === 'photo') {
-                    // 🔥 FIX: Added 'object-contain h-64 bg-neutral-950' to keep the full image aspect ratio visible!
-                    mediaPreview = `<div class="w-full h-64 bg-neutral-950 flex items-center justify-center"><img src="${item.url}" class="w-full h-full object-contain"></div>`;
+                    mediaPreview = `<div class="w-full h-64 bg-neutral-950 flex items-center justify-center"><img src="${fileUrl}" class="w-full h-full object-contain"></div>`;
                 } else {
                     mediaPreview = `
                     <div class="w-full aspect-video flex flex-col items-center justify-center bg-indigo-950/20 border-b border-neutral-900 p-4">
                         <svg class="w-10 h-10 text-indigo-500 mb-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-                        <audio src="${item.url}" controls class="w-full max-w-[240px] h-8"></audio>
+                        <audio src="${fileUrl}" controls class="w-full max-w-[240px] h-8"></audio>
                     </div>`;
                 }
 
@@ -189,7 +213,7 @@
                                 <p class="text-xs font-bold text-white truncate uppercase">${item.title}</p>
                                 <span class="text-[9px] text-gray-500 font-bold uppercase tracking-wider block mt-0.5">${item.type}</span>
                             </div>
-                            <a href="${item.url}" download="${item.title}" target="_blank" class="bg-indigo-600 hover:bg-indigo-500 text-white p-2.5 rounded-xl transition shadow-md flex items-center justify-center shrink-0">
+                            <a href="${fileUrl}" download="${item.title}" target="_blank" class="bg-indigo-600 hover:bg-indigo-500 text-white p-2.5 rounded-xl transition shadow-md flex items-center justify-center shrink-0">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                             </a>
                         </div>
@@ -198,13 +222,15 @@
         }
 
         function showSection(section) {
+            currentSection = section;
             document.getElementById('admin-view').classList.add('hidden');
             document.getElementById('content-area').classList.remove('hidden');
             
             document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.replace('text-indigo-500', 'text-gray-500'));
-            document.getElementById(`nav-${section}`).classList.replace('text-gray-500', 'text-indigo-500');
+            const targetNav = document.getElementById(`nav-${section}`);
+            if(targetNav) targetNav.classList.replace('text-gray-500', 'text-indigo-500');
 
-            const bConfig = bannerData[section];
+            const bConfig = bannerData[section] || bannerData['home'];
             document.getElementById('banner-tag').innerText = bConfig.tag;
             document.getElementById('banner-title').innerText = bConfig.title;
             document.getElementById('banner-desc').innerText = bConfig.desc;
@@ -228,26 +254,30 @@
 
             if(!title) return alert("Please specify an asset identifier name.");
 
-            const saveAsset = (sourceUrl) => {
-                const newItem = { id: Date.now(), type, title, url: sourceUrl };
-                db.unshift(newItem);
-                localStorage.setItem('cf_studio_hub', JSON.stringify(db));
-                alert("Success: Deployed live instantly!");
+            const newItem = {
+                id: Date.now(),
+                type: type,
+                title: title,
+                url: urlInput || "",
+                fileBlob: file || null
+            };
+
+            // Write object raw data safely into IndexedDB Storage Repository
+            const transaction = dbInstance.transaction(["assets"], "readwrite");
+            const store = transaction.objectStore("assets");
+            const addReq = store.add(newItem);
+
+            addReq.onsuccess = () => {
+                alert("Success: Big asset deployed safely via IndexedDB!");
                 document.getElementById('upTitle').value = '';
                 document.getElementById('upUrl').value = '';
                 document.getElementById('upFile').value = '';
+                loadDataFromIndexedDB();
                 showSection('home');
             };
-
-            if(urlInput) {
-                saveAsset(urlInput);
-            } else if(file) {
-                const reader = new FileReader();
-                reader.onload = (e) => saveAsset(e.target.result);
-                reader.readAsDataURL(file);
-            } else {
-                alert("Please add either a Web URL Link or browse a file source.");
-            }
+            addReq.onerror = () => {
+                alert("Database transactional engine deployment crash error.");
+            };
         }
 
         function searchAssets(val) {
@@ -285,10 +315,14 @@
 
         function deleteAsset(id) {
             if(confirm("Permanently wipe asset from server storage?")) {
-                db = db.filter(i => i.id !== id);
-                localStorage.setItem('cf_studio_hub', JSON.stringify(db));
-                renderAdminList();
-                renderGrid(db);
+                const transaction = dbInstance.transaction(["assets"], "readwrite");
+                const store = transaction.objectStore("assets");
+                const delReq = store.delete(id);
+                
+                delReq.onsuccess = () => {
+                    loadDataFromIndexedDB();
+                    setTimeout(renderAdminList, 300);
+                };
             }
         }
     </script>
