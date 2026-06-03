@@ -60,7 +60,7 @@
         <div class="glass p-12 rounded-[50px] w-[90%] max-w-md text-center">
             <h1 class="text-5xl font-black mb-10 text-orange-500 italic tracking-tighter">UNO PRO</h1>
             <input type="text" id="usernameInput" placeholder="Enter Nickname" class="w-full bg-white/10 border-4 border-white/10 p-6 rounded-3xl mb-6 text-2xl text-center font-black outline-none focus:border-orange-500">
-            <button onclick="saveUser()" class="w-full bg-orange-600 py-6 rounded-3xl font-black text-xl uppercase tracking-widest">Join Lobby</button>
+            <button onclick="saveUser()" class="w-full bg-orange-600 py-6 rounded-3xl font-black text-xl uppercase tracking-widest active:scale-95">Join Lobby</button>
         </div>
     </div>
 
@@ -69,7 +69,7 @@
         <header class="flex justify-between items-center py-10">
             <div>
                 <p class="text-xs font-black text-orange-500 uppercase tracking-widest">Active Player</p>
-                <h2 id="user-display" class="text-4xl font-black italic">Gamer</h2>
+                <h2 id="user-display" class="text-4xl font-black italic text-white">Gamer</h2>
             </div>
             <button onclick="logout()" class="w-16 h-16 glass rounded-2xl flex items-center justify-center text-red-500 text-2xl"><i class="fas fa-power-off"></i></button>
         </header>
@@ -96,7 +96,7 @@
             </div>
             <div id="lobby-players" class="space-y-4 mb-10">
                 <div class="flex justify-between items-center bg-white/10 p-6 rounded-3xl border border-white/10">
-                    <span class="text-xl font-bold flex items-center gap-4"><i class="fas fa-crown text-yellow-500 text-sm"></i> <span id="host-name-lobby">Host</span></span>
+                    <span class="text-xl font-bold flex items-center gap-4 text-white"><i class="fas fa-crown text-yellow-500 text-sm"></i> <span id="host-name-lobby">Host</span></span>
                     <span class="text-xs bg-green-500/20 text-green-400 px-4 py-2 rounded-full font-black">READY</span>
                 </div>
             </div>
@@ -109,23 +109,18 @@
 
     <!-- 🃏 4. GAME ARENA (PAAYI EDITION) -->
     <div id="game-arena" class="hidden paayi-bg">
-        <!-- Opponents Heads -->
         <div id="bot-heads" class="flex gap-6 justify-center py-2"></div>
 
-        <!-- The Table -->
         <div class="relative flex flex-col items-center">
             <div class="flex items-center gap-24 mb-12">
-                <!-- Draw Pile -->
                 <div onclick="drawCard()" class="w-24 h-36 bg-red-800 rounded-2xl border-4 border-white/30 flex items-center justify-center shadow-2xl cursor-pointer active:scale-90 transition-transform">
-                    <div class="text-center font-black text-sm leading-tight">UNO<br>DRAW</div>
+                    <div class="text-center font-black text-white text-sm leading-tight">UNO<br>DRAW</div>
                 </div>
-                <!-- Discard Pile -->
                 <div class="relative">
                     <div id="discard-pile" class="w-32 h-44 rounded-2xl border-8 border-white flex items-center justify-center text-6xl font-black shadow-[0_0_60px_rgba(0,0,0,0.4)]"></div>
                 </div>
             </div>
 
-            <!-- 🏆 MINI WINNER BADGE (Visible only on win) -->
             <div id="winner-badge" class="hidden absolute top-[-80px] px-10 py-4 rounded-full flex items-center gap-6 z-50">
                 <i class="fas fa-crown text-yellow-400 text-3xl"></i>
                 <div class="text-left">
@@ -136,7 +131,6 @@
             </div>
         </div>
 
-        <!-- Player's Section -->
         <div class="w-full">
             <div class="text-center mb-4">
                 <span id="turn-txt" class="text-xs font-black uppercase text-black bg-white/30 px-6 py-2 rounded-full tracking-[4px]">Waiting...</span>
@@ -154,11 +148,7 @@
         window.onload = () => {
             const saved = localStorage.getItem('uno_pro_user');
             if (saved) {
-                user = saved;
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('home-screen').classList.remove('hidden');
-                document.getElementById('user-display').innerText = user;
-                document.getElementById('host-name-lobby').innerText = user;
+                initUser(saved);
             }
         };
 
@@ -166,7 +156,15 @@
             const name = document.getElementById('usernameInput').value.trim();
             if (!name) return alert("Enter nickname!");
             localStorage.setItem('uno_pro_user', name);
-            location.reload();
+            initUser(name);
+        }
+
+        function initUser(name) {
+            user = name;
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('home-screen').classList.remove('hidden');
+            document.getElementById('user-display').innerText = user;
+            document.getElementById('host-name-lobby').innerText = user;
         }
 
         function logout() { localStorage.clear(); location.reload(); }
@@ -202,7 +200,7 @@
                 </div>`).join('');
 
             document.getElementById('player-hand').innerHTML = pHand.map((c, i) => `
-                <div onclick="playCard(${i})" class="card-big flex items-center justify-center font-black" style="background:${c.c}">${c.v}</div>`).join('');
+                <div onclick="playCard(${i})" class="card-big flex items-center justify-center font-black text-white" style="background:${c.c}">${c.v}</div>`).join('');
 
             document.getElementById('turn-txt').innerText = turn === 0 ? "YOUR TURN" : `PLAYER ${turn} MOVING...`;
         }
