@@ -3,484 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CreativeFlow - Premium Digital Assets Library</title>
+    <title>CreativeFlow | Ultimate Media Engine</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: #030712;
-        }
-
-        .premium-glass {
-            background: rgba(17, 24, 39, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .gradient-text {
-            background: linear-gradient(135deg, #a5b4fc 0%, #6366f1 50%, #38bdf8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .search-box-glow {
-            box-shadow: 0 0 40px -10px rgba(99, 102, 241, 0.2);
-        }
-
-        /* Standard scrollbar customization for rich look */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #030712;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1f2937;
-            border-radius: 99px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #374151;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+        body { font-family: 'Outfit', sans-serif; background: #020617; color: #f8fafc; }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+        .gradient-border { border: 2px solid; border-image: linear-gradient(to right, #6366f1, #a855f7) 1; }
+        .card-hover:hover { transform: translateY(-5px); transition: all 0.3s ease; box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.4); }
     </style>
 </head>
-<body class="text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500/30 selection:text-indigo-200">
+<body class="min-h-screen">
 
-    <header class="sticky top-0 z-50 border-b border-slate-900 bg-gray-950/80 backdrop-blur-xl px-6 py-4 transition-all">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            
-            <div class="flex items-center gap-3 cursor-pointer group" onclick="showSection('home')">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"></path>
-                    </svg>
-                </div>
-                <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">Creative<span class="text-indigo-400">Flow</span></span>
+    <!-- 🌟 TOP NAVIGATION -->
+    <nav class="sticky top-0 z-50 glass border-b border-slate-800 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-2 cursor-pointer" onclick="showSection('home')">
+            <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/50">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             </div>
-
-            <nav class="hidden md:flex items-center gap-1">
-                <button onclick="showSection('videos')" class="px-4 py-2 text-sm font-medium text-slate-400 hover:text-white rounded-lg hover:bg-slate-900/50 transition flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z"></path><path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5-4.5 3v-6l4.5 3z"></path></svg>
-                    Videos
-                </button>
-                <button onclick="showSection('photos')" class="px-4 py-2 text-sm font-medium text-slate-400 hover:text-white rounded-lg hover:bg-slate-900/50 transition flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375 0 11-.75 0 .375 0 010 .75z"></path></svg>
-                    Photos
-                </button>
-                <button onclick="showSection('music')" class="px-4 py-2 text-sm font-medium text-slate-400 hover:text-white rounded-lg hover:bg-slate-900/50 transition flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 9l10.5-3m0 0v11.25m0-11.25L9 9.75M9 9.75v11.25m3.75-18v11.25m-12-10.5h16.5"></path></svg>
-                    Music
-                </button>
-                <button onclick="showSection('sounds')" class="px-4 py-2 text-sm font-medium text-slate-400 hover:text-white rounded-lg hover:bg-slate-900/50 transition flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z"></path></svg>
-                    Sound Effects
-                </button>
-            </nav>
-
-            <div>
-                <button id="authBtn" onclick="openAuthModal()" class="relative group overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition duration-300 shadow-lg shadow-indigo-600/20 flex items-center gap-2 cursor-pointer">
-                    <svg class="w-4 h-4 text-indigo-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path></svg>
-                    <span id="userText">Account</span>
-                </button>
-            </div>
+            <h1 class="text-2xl font-black tracking-tighter italic">CREATIVE<span class="text-indigo-500">FLOW</span></h1>
         </div>
-    </header>
+        
+        <div class="hidden md:flex gap-8 font-semibold text-sm uppercase tracking-widest text-slate-400">
+            <button onclick="showSection('video')" class="hover:text-indigo-400 transition">Videos</button>
+            <button onclick="showSection('photo')" class="hover:text-indigo-400 transition">Photos</button>
+            <button onclick="showSection('music')" class="hover:text-indigo-400 transition">Music</button>
+            <button onclick="showSection('sound')" class="hover:text-indigo-400 transition">SFX</button>
+        </div>
 
-    <main class="flex-grow max-w-7xl mx-auto px-6 py-12 w-full">
+        <button id="authBtn" onclick="openAuthModal()" class="bg-slate-800 hover:bg-indigo-600 px-6 py-2 rounded-full text-sm font-bold transition">LOGIN</button>
+    </nav>
 
-        <section id="home-view" class="space-y-16 animate-fade-in">
-            <div class="text-center space-y-6 max-w-3xl mx-auto py-8">
-                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-semibold border border-indigo-500/20 tracking-wider uppercase">
-                    Uncapped Free Assets Network
-                </span>
-                <h1 class="text-4xl sm:text-6xl font-black tracking-tight leading-tight">
-                    The Ultimate Studio <br><span class="gradient-text">Resource Engine.</span>
-                </h1>
-                <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
-                    Instantly retrieve premium phonk audio elements, cinematic captures, templates, and studio high fidelity assets.
-                </p>
-                
-                <div class="relative max-w-2xl mx-auto mt-8 search-box-glow rounded-2xl">
-                    <div class="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                        <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    </div>
-                    <input type="text" id="studioSearchInput" onkeyup="orchestrateSearch(event)" placeholder="Search 'phonk', 'rain effect', 'car photo'..." class="w-full bg-slate-900/90 border border-slate-800 rounded-2xl pl-14 pr-6 py-4.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition duration-300 text-sm font-medium">
+    <main class="max-w-7xl mx-auto px-6 py-10">
+
+        <!-- 🏠 HOME SECTION -->
+        <section id="home-view" class="space-y-16">
+            <!-- Hero with Search Box -->
+            <div class="text-center py-10 space-y-8">
+                <h2 class="text-5xl md:text-7xl font-extrabold tracking-tight">Design Everything. <br><span class="text-indigo-500 underline decoration-indigo-800">Download Anything.</span></h2>
+                <div class="relative max-w-2xl mx-auto shadow-2xl">
+                    <input type="text" id="mainSearch" onkeyup="searchAssets(this.value)" placeholder="Search for phonk, cars, nature, rain..." class="w-full bg-slate-900 border-2 border-slate-800 rounded-2xl px-6 py-5 text-lg focus:outline-none focus:border-indigo-500 transition">
+                    <div class="absolute right-4 top-4 bg-indigo-600 p-2 rounded-lg"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div>
                 </div>
             </div>
 
+            <!-- Recent Uploads Title -->
             <div class="space-y-6">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                        <div class="w-2 h-6 bg-indigo-500 rounded-full"></div>
-                        <h2 class="text-xl font-bold tracking-tight text-white">Latest Live Broadcasts</h2>
-                    </div>
-                </div>
-                <div id="home-stream-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    </div>
+                <h3 class="text-2xl font-bold flex items-center gap-3"><span class="w-8 h-1 bg-indigo-500"></span> RECENT UPLOADS</h3>
+                <div id="home-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
             </div>
         </section>
 
-        <section id="library-view" class="hidden space-y-10">
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-900 pb-8">
-                <div class="space-y-2">
-                    <h1 id="library-header-title" class="text-3xl sm:text-4xl font-extrabold capitalize tracking-tight">Section</h1>
-                    <p id="library-header-desc" class="text-slate-400 text-sm">Finest catalog collections curated daily.</p>
-                </div>
-                <div id="library-filter-dock" class="flex flex-wrap gap-2 overflow-x-auto pb-2 md:pb-0">
-                    </div>
-            </div>
-            
-            <div id="library-stream-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                </div>
+        <!-- 📂 CATEGORY SECTION -->
+        <section id="category-view" class="hidden space-y-8">
+            <h2 id="cat-title" class="text-4xl font-black uppercase italic">Category</h2>
+            <div id="cat-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
         </section>
 
-        <section id="ops-center-view" class="hidden space-y-10">
-            <div class="flex justify-between items-center border-b border-slate-900 pb-6">
-                <div class="space-y-1">
-                    <h1 class="text-3xl font-extrabold text-indigo-400 tracking-tight flex items-center gap-3">
-                        <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"></path></svg>
-                        Security Vault Management
-                    </h1>
-                    <p class="text-slate-400 text-sm">System administration control dashboard panel.</p>
-                </div>
-                <button onclick="terminateSession()" class="bg-slate-900 hover:bg-rose-950/40 hover:text-rose-400 text-slate-300 border border-slate-800 hover:border-rose-900/50 text-xs font-semibold px-4 py-2.5 rounded-xl transition cursor-pointer">
-                    Terminate Session
-                </button>
+        <!-- 🔐 ADMIN DASHBOARD -->
+        <section id="admin-view" class="hidden space-y-12">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-6">
+                <h2 class="text-3xl font-black text-indigo-400 italic">ADMIN PANEL</h2>
+                <button onclick="logout()" class="text-red-400 font-bold hover:underline">LOGOUT</button>
             </div>
 
-            <div class="max-w-2xl bg-gradient-to-b from-slate-900 to-gray-950 border border-slate-800 p-8 rounded-2xl shadow-2xl space-y-6">
-                <div class="space-y-1">
-                    <h3 class="text-lg font-bold text-white">Broadcast New Vault Asset</h3>
-                    <p class="text-xs text-slate-400">Direct integration upload pipeline. Files distribute immediately to servers globally.</p>
+            <div class="grid md:grid-cols-2 gap-10">
+                <!-- Upload Form -->
+                <div class="glass p-8 rounded-3xl space-y-6">
+                    <h3 class="text-xl font-bold">Upload New Content</h3>
+                    <div class="space-y-4">
+                        <select id="upType" onchange="loadCatOptions()" class="w-full bg-slate-800 p-4 rounded-xl outline-none">
+                            <option value="video">Video</option>
+                            <option value="photo">Photo</option>
+                            <option value="music">Music</option>
+                            <option value="sound">Sound Effect</option>
+                        </select>
+                        <select id="upCat" class="w-full bg-slate-800 p-4 rounded-xl outline-none"></select>
+                        <input type="text" id="upTitle" placeholder="Asset Title" class="w-full bg-slate-800 p-4 rounded-xl outline-none">
+                        <input type="file" id="upFile" class="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-indigo-600 file:text-white cursor-pointer">
+                        <button onclick="handleUpload()" class="w-full bg-indigo-600 py-4 rounded-xl font-black tracking-widest hover:bg-indigo-500 transition">PUBLISH LIVE</button>
+                    </div>
                 </div>
-                
-                <form id="vaultUploadForm" onsubmit="executeVaultPublish(event)" class="space-y-5">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <label class="text-xs font-bold text-slate-400 tracking-wider uppercase">Asset Pipeline Ecosystem</label>
-                            <select id="vaultFieldType" onchange="synchronizeCategories()" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm focus:outline-none focus:border-indigo-500 text-slate-200 font-medium">
-                                <option value="video">Video Processing Core</option>
-                                <option value="photo">Photo Capture Grid</option>
-                                <option value="music">Music Stream Rack</option>
-                                <option value="sound">Acoustic Sound Effects</option>
-                            </select>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-xs font-bold text-slate-400 tracking-wider uppercase">Target Node Category</label>
-                            <select id="vaultFieldCategory" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm focus:outline-none focus:border-indigo-500 text-slate-200 font-medium capitalize">
-                                </select>
-                        </div>
-                    </div>
-                    
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-slate-400 tracking-wider uppercase">Asset Metadata Title</label>
-                        <input type="text" id="vaultFieldTitle" required placeholder="e.g., Ultra Hyper Phonk Mix 2026, Tokyo Drift Neon Capture" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm focus:outline-none focus:border-indigo-500 text-slate-100 placeholder-slate-600">
-                    </div>
 
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-slate-400 tracking-wider uppercase">Binary Core File Payload</label>
-                        <div class="border border-dashed border-slate-800 rounded-xl p-6 bg-slate-950/40 hover:bg-slate-950 transition relative group flex flex-col items-center justify-center text-center cursor-pointer">
-                            <input type="file" id="vaultFieldFile" required class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
-                            <svg class="w-8 h-8 text-slate-600 group-hover:text-indigo-400 transition mb-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"></path></svg>
-                            <span class="text-sm font-semibold text-slate-300 group-hover:text-white transition">Select localized media document</span>
-                            <span class="text-[11px] text-slate-500 mt-0.5">MP4, JPG, PNG, MP3 or OGG directly payload injection</span>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold text-sm py-4 rounded-xl transition duration-300 cursor-pointer shadow-lg shadow-indigo-600/10">
-                        Deploy System Broadcast Live
-                    </button>
-                </form>
+                <!-- Delete/Manage Section -->
+                <div class="glass p-8 rounded-3xl space-y-6">
+                    <h3 class="text-xl font-bold">Manage Assets (Delete)</h3>
+                    <div id="admin-manage-list" class="space-y-3 max-h-[400px] overflow-y-auto pr-2"></div>
+                </div>
             </div>
         </section>
-
     </main>
 
-    <div id="authGateModal" class="hidden fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="premium-glass rounded-2xl w-full max-w-md p-8 space-y-6 relative border border-slate-800 shadow-2xl">
-            <button onclick="closeAuthModal()" class="absolute right-5 top-5 text-slate-500 hover:text-white transition cursor-pointer">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-            
-            <div class="text-center space-y-2">
-                <div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center mx-auto text-indigo-400">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"></path></svg>
-                </div>
-                <h3 class="text-xl font-bold tracking-tight text-white">Central Authentication Terminal</h3>
-                <p class="text-xs text-slate-400">Provide alias handle identification or developer license key</p>
+    <!-- 🔑 LOGIN MODAL -->
+    <div id="loginModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center p-4 z-[100]">
+        <div class="glass max-w-md w-full p-10 rounded-3xl space-y-6 border-indigo-500/30">
+            <div class="text-center">
+                <h3 class="text-3xl font-black italic">LOGIN</h3>
+                <p class="text-slate-400 text-sm mt-2">Enter your name or admin secret key</p>
             </div>
-
-            <div class="space-y-4">
-                <div class="space-y-1.5">
-                    <label class="text-[10px] font-bold text-slate-500 tracking-widest uppercase">Identity Credentials Key</label>
-                    <input type="text" id="authConsoleInput" placeholder="User Name / High-security authorization token" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-sm focus:outline-none focus:border-indigo-500 text-slate-100 placeholder-slate-600 transition">
-                </div>
-                <button onclick="evaluateConsoleGate()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3.5 rounded-xl font-bold text-sm transition tracking-wide cursor-pointer shadow-lg shadow-indigo-600/20">
-                    Authenticate Session
-                </button>
-            </div>
+            <input type="text" id="loginKey" placeholder="Your Name or Admin Email" class="w-full bg-slate-800 p-4 rounded-xl outline-none border border-slate-700 focus:border-indigo-500">
+            <button onclick="processLogin()" class="w-full bg-indigo-600 py-4 rounded-xl font-black tracking-widest">CONTINUE</button>
+            <button onclick="closeAuthModal()" class="w-full text-slate-500 text-sm">Cancel</button>
         </div>
     </div>
 
-    <footer class="border-t border-slate-900 bg-gray-950/40 py-6 text-center text-xs text-slate-500">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <span class="font-medium text-slate-400">© 2026 CreativeFlow Inc. All Rights Liberated.</span>
-            <div class="flex gap-4 text-slate-500">
-                <a href="#" class="hover:text-indigo-400 transition">API Terms</a>
-                <a href="#" class="hover:text-indigo-400 transition">Storage Specs</a>
-            </div>
-        </div>
-    </footer>
-
     <script>
-        // High Quality Simulated Digital Cloud Repositories
-        let applicationDatabase = [
-            { id: 1, type: 'video', title: 'Cyberpunk Neon Street Loop', category: 'background', file: 'https://assets.mixkit.co/videos/preview/mixkit-neon-light-from-a-building-window-in-a-rainy-night-43260-large.mp4', thumb: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600' },
-            { id: 2, type: 'photo', title: 'Hypercar Matte Black Silhouette', category: 'cars', file: 'https://images.unsplash.com/photo-1617469767053-d3b508a04242?w=1200', thumb: 'https://images.unsplash.com/photo-1617469767053-d3b508a04242?w=600' },
-            { id: 3, type: 'music', title: 'DRIFT PHONK - Executioner', category: 'phonk', file: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', thumb: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600' },
-            { id: 4, type: 'sound', title: 'Cinematic Horror Void Drop', category: 'horror', file: 'https://actions.google.com/sounds/v1/foley/creaky_door.ogg', thumb: 'https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=600' },
-            { id: 5, type: 'video', title: 'Anime Aesthetic Green Screen Grid', category: 'green screen', file: 'https://assets.mixkit.co/videos/preview/mixkit-waves-of-sand-in-the-desert-43063-large.mp4', thumb: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600' },
-            { id: 6, type: 'photo', title: 'Cybernetic AI Entity Render', category: 'ai images', file: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200', thumb: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600' }
+        // Database
+        let db = JSON.parse(localStorage.getItem('mediaDB')) || [
+            { id: 1, type: 'video', title: 'Cinematic Nature', cat: 'Nature', url: 'https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4' },
+            { id: 2, type: 'photo', title: 'Sport Car Night', cat: 'Cars', url: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800' },
+            { id: 3, type: 'music', title: 'Hard Phonk Beat', cat: 'Phonk', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+            { id: 4, type: 'sound', title: 'Thunder Rain', cat: 'Rain', url: 'https://actions.google.com/sounds/v1/weather/rain_heavy_loud.ogg' }
         ];
 
-        // Architecture Categories Blueprint Matrix
-        const categoriesMatrix = {
-            video: ['nature', 'gaming', 'cartoon', 'green screen', 'background'],
-            photo: ['nature', 'cars', 'animals', 'wallpapers', 'ai images'],
-            music: ['phonk', 'cinematic', 'funny', 'sad', 'motivation'],
-            sound: ['explosion', 'rain', 'thunder', 'magic', 'horror']
+        const cats = {
+            video: ['Nature', 'Gaming', 'Cartoon', 'Green Screen', 'Background'],
+            photo: ['Nature', 'Cars', 'Animals', 'Wallpapers', 'AI Images'],
+            music: ['Phonk', 'Cinematic', 'Funny', 'Sad', 'Motivation'],
+            sound: ['Explosion', 'Rain', 'Thunder', 'Magic', 'Horror']
         };
 
-        let userIdentityHandle = null;
-        let isSystemAdminAuthenticated = false;
+        let isAdmin = false;
 
-        // Initialize Engine Core
-        window.onload = function() {
-            triggerGridRenders(applicationDatabase, 'home-stream-grid');
-            synchronizeCategories();
-        };
+        // Core Functions
+        window.onload = () => { renderGrid(db, 'home-grid'); loadCatOptions(); };
 
-        // UI Pipeline Navigation Core Router
-        function showSection(targetSection) {
-            document.getElementById('home-view').classList.add('hidden');
-            document.getElementById('library-view').classList.add('hidden');
-            document.getElementById('ops-center-view').classList.add('hidden');
-
-            if (targetSection === 'home') {
+        function showSection(sec) {
+            ['home-view', 'category-view', 'admin-view'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            if(sec === 'home') {
                 document.getElementById('home-view').classList.remove('hidden');
-                triggerGridRenders(applicationDatabase, 'home-stream-grid');
-            } else if (targetSection === 'admin') {
-                if (isSystemAdminAuthenticated) {
-                    document.getElementById('ops-center-view').classList.remove('hidden');
-                }
+                renderGrid(db, 'home-grid');
+            } else if(sec === 'admin') {
+                document.getElementById('admin-view').classList.remove('hidden');
+                renderAdminList();
             } else {
-                let identityMap = { 'videos': 'video', 'photos': 'photo', 'music': 'music', 'sounds': 'sound' };
-                let designatedType = identityMap[targetSection];
-                
-                document.getElementById('library-view').classList.remove('hidden');
-                document.getElementById('library-header-title').innerText = targetSection;
-                document.getElementById('library-header-desc').innerText = `Elite processing pipeline architecture logs for structural ${targetSection}.`;
-                
-                // Construct Structural Filtering Interface Filters Dynamically
-                let docket = document.getElementById('library-filter-dock');
-                docket.innerHTML = `<button onclick="filterVaultType('${designatedType}', this)" class="bg-indigo-600 text-white px-5 py-2 rounded-xl text-xs font-bold capitalize transition cursor-pointer shadow-md shadow-indigo-600/10">Show All</button>`;
-                
-                categoriesMatrix[designatedType].forEach(subNode => {
-                    docket.innerHTML += `<button onclick="filterVaultSubCategory('${designatedType}', '${subNode}', this)" class="bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800/80 px-5 py-2 rounded-xl text-xs font-bold capitalize transition cursor-pointer">${subNode}</button>`;
-                });
-
-                filterVaultType(designatedType);
+                document.getElementById('category-view').classList.remove('hidden');
+                document.getElementById('cat-title').innerText = sec;
+                let filtered = db.filter(i => i.type === sec);
+                renderGrid(filtered, 'cat-grid');
             }
         }
 
-        // Advanced Universal Modular Grid Layout Construction Engine
-        function triggerGridRenders(dataSet, gridContainerId) {
-            let DOMContainer = document.getElementById(gridContainerId);
-            DOMContainer.innerHTML = '';
+        function renderGrid(data, target) {
+            const grid = document.getElementById(target);
+            grid.innerHTML = '';
+            data.forEach(item => {
+                let preview = '';
+                if(item.type === 'video') preview = `<video src="${item.url}" class="w-full h-48 object-cover"></video>`;
+                else if(item.type === 'photo') preview = `<img src="${item.url}" class="w-full h-48 object-cover">`;
+                else preview = `<div class="w-full h-48 bg-slate-800 flex items-center justify-center"><svg class="w-12 h-12 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 3v11a3 3 0 102 2.82V7.82l8-1.6V12a3 3 0 102 2.82V3z"/></svg></div>`;
 
-            if (dataSet.length === 0) {
-                DOMContainer.innerHTML = `
-                    <div class="col-span-full py-16 text-center space-y-2">
-                        <svg class="w-10 h-10 text-slate-700 mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 13.5h3.86a2.25 2.25 0 012.008 1.24l.885 1.77a2.25 2.25 0 002.007 1.241h1.98a2.25 2.25 0 002.007-1.24l.885-1.77a2.25 2.25 0 012.007-1.241h3.86m-18 0h18M2.25 13.5l1.451-8.33A1.875 1.875 0 015.582 3.75h12.836a1.875 1.875 0 011.88 1.416l1.452 8.33M2.25 13.5v6.75A2.25 2.25 0 004.5 22.5h15a2.25 2.25 0 002.25-2.25V13.5M10.5 15h3"></path></svg>
-                        <p class="text-sm font-medium text-slate-500">Query mismatch. Zero library array objects found.</p>
+                grid.innerHTML += `
+                    <div class="glass rounded-2xl overflow-hidden card-hover">
+                        ${preview}
+                        <div class="p-4 flex justify-between items-center">
+                            <div><p class="font-bold truncate w-32">${item.title}</p><p class="text-xs text-slate-500">${item.cat}</p></div>
+                            <a href="${item.url}" download class="bg-indigo-600 p-2 rounded-lg hover:scale-110 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></a>
+                        </div>
+                        ${item.type === 'music' || item.type === 'sound' ? `<audio src="${item.url}" controls class="w-full h-8 opacity-50 px-2 pb-2"></audio>` : ''}
                     </div>`;
-                return;
-            }
-
-            dataSet.forEach(element => {
-                let assetCoreViewer = '';
-
-                if (element.type === 'video') {
-                    assetCoreViewer = `<video src="${element.file}" class="w-full h-48 object-cover" controls preload="none" poster="${element.thumb}"></video>`;
-                } else if (element.type === 'photo') {
-                    assetCoreViewer = `<div class="overflow-hidden h-48 w-full"><img src="${element.thumb}" class="w-full h-48 object-cover hover:scale-105 transition duration-500 cursor-pointer" onclick="window.open('${element.file}', '_blank')"></div>`;
-                } else if (element.type === 'music' || element.type === 'sound') {
-                    assetCoreViewer = `
-                        <div class="w-full h-48 bg-slate-950 flex flex-col justify-between p-4 relative border-b border-slate-900/60 overflow-hidden">
-                            <img src="${element.thumb}" class="absolute inset-0 w-full h-full object-cover opacity-10 pointer-events-none scale-110 blur-sm">
-                            <div class="flex justify-between items-start z-10 w-full">
-                                <div class="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 text-indigo-400">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
-                                </div>
-                            </div>
-                            <audio src="${element.file}" controls class="w-full z-10 opacity-90 filter invert tracking-tight"></audio>
-                        </div>
-                    `;
-                }
-
-                let pipelineBadgeColor = { 
-                    video: 'bg-rose-500/10 text-rose-400 border-rose-500/20', 
-                    photo: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', 
-                    music: 'bg-blue-500/10 text-blue-400 border-blue-500/20', 
-                    sound: 'bg-amber-500/10 text-amber-400 border-amber-500/20' 
-                };
-
-                let cardComponentHTML = `
-                    <div class="bg-gray-900/40 border border-slate-900 rounded-2xl overflow-hidden shadow-xl group hover:border-slate-800/80 hover:bg-slate-900/20 transition-all duration-300 flex flex-col justify-between">
-                        <div>
-                            <div class="relative">
-                                ${assetCoreViewer}
-                                <span class="absolute top-3 left-3 text-[9px] uppercase font-bold tracking-widest px-2.5 py-1 rounded-lg backdrop-blur-md border ${pipelineBadgeColor[element.type]}">${element.type}</span>
-                            </div>
-                            <div class="p-5 space-y-1">
-                                <h3 class="font-bold text-sm truncate text-slate-200 group-hover:text-white transition">${element.title}</h3>
-                                <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider">${element.category}</p>
-                            </div>
-                        </div>
-                        <div class="px-5 pb-5 pt-1">
-                            <a href="${element.file}" download="${element.title}" target="_blank" class="w-full bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 border border-slate-800/80 hover:border-indigo-500 transition duration-300 shadow-sm cursor-pointer">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12l-4.5 4.5m0 0l-4.5-4.5m4.5 4.5V3"></path></svg>
-                                Download Document
-                            </a>
-                        </div>
-                    </div>
-                `;
-                DOMContainer.innerHTML += cardComponentHTML;
             });
         }
 
-        // Filtering Execution Node Block
-        function filterVaultType(type, elementRef) {
-            adjustActiveFilterStyle(elementRef);
-            let parsedSet = applicationDatabase.filter(item => item.type === type);
-            triggerGridRenders(parsedSet, 'library-stream-grid');
+        function searchAssets(val) {
+            let filtered = db.filter(i => i.title.toLowerCase().includes(val.toLowerCase()) || i.cat.toLowerCase().includes(val.toLowerCase()));
+            renderGrid(filtered, 'home-grid');
         }
 
-        function filterVaultSubCategory(type, nodeCat, elementRef) {
-            adjustActiveFilterStyle(elementRef);
-            let parsedSet = applicationDatabase.filter(item => item.type === type && item.category.toLowerCase() === nodeCat.toLowerCase());
-            triggerGridRenders(parsedSet, 'library-stream-grid');
+        // Admin Logic
+        function loadCatOptions() {
+            let type = document.getElementById('upType').value;
+            let catSelect = document.getElementById('upCat');
+            catSelect.innerHTML = cats[type].map(c => `<option value="${c}">${c}</option>`).join('');
         }
 
-        function adjustActiveFilterStyle(activeBtn) {
-            if (!activeBtn) return;
-            let parentElements = activeBtn.parentElement.children;
-            for (let btn of parentElements) {
-                btn.className = "bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800/80 px-5 py-2 rounded-xl text-xs font-bold capitalize transition cursor-pointer";
+        function handleUpload() {
+            let file = document.getElementById('upFile').files[0];
+            let title = document.getElementById('upTitle').value;
+            if(!file || !title) return alert("Fill all details!");
+
+            let newItem = {
+                id: Date.now(),
+                type: document.getElementById('upType').value,
+                cat: document.getElementById('upCat').value,
+                title: title,
+                url: URL.createObjectURL(file)
+            };
+            db.unshift(newItem);
+            localStorage.setItem('mediaDB', JSON.stringify(db));
+            alert("Uploaded successfully! Check Home Page.");
+            showSection('home');
+        }
+
+        function renderAdminList() {
+            let list = document.getElementById('admin-manage-list');
+            list.innerHTML = db.map(i => `
+                <div class="flex justify-between items-center bg-slate-900 p-4 rounded-xl border border-slate-800">
+                    <p class="text-sm font-bold truncate w-40">${i.title} (${i.type})</p>
+                    <button onclick="deleteAsset(${i.id})" class="text-rose-500 p-2 hover:bg-rose-500/10 rounded-lg transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+                </div>
+            `).join('');
+        }
+
+        function deleteAsset(id) {
+            if(confirm("Are you sure to delete?")) {
+                db = db.filter(i => i.id !== id);
+                localStorage.setItem('mediaDB', JSON.stringify(db));
+                renderAdminList();
+                renderGrid(db, 'home-grid');
             }
-            activeBtn.className = "bg-indigo-600 text-white px-5 py-2 rounded-xl text-xs font-bold capitalize transition cursor-pointer shadow-md shadow-indigo-600/10";
         }
 
-        // Live Realtime Studio Search Bar Engine
-        function orchestrateSearch(event) {
-            let criteriaQuery = event.target.value.toLowerCase().trim();
-            let matchedElements = applicationDatabase.filter(item => 
-                item.title.toLowerCase().includes(criteriaQuery) || 
-                item.category.toLowerCase().includes(criteriaQuery) ||
-                item.type.toLowerCase().includes(criteriaQuery)
-            );
-            triggerGridRenders(matchedElements, 'home-stream-grid');
-        }
-
-        // Account Gateway Management Modals
-        function openAuthModal() {
-            document.getElementById('authGateModal').classList.remove('hidden');
-        }
-
-        function closeAuthModal() {
-            document.getElementById('authGateModal').classList.add('hidden');
-        }
-
-        // Bypassing Token Core Analyzer Logic
-        function evaluateConsoleGate() {
-            let inputField = document.getElementById('authConsoleInput');
-            let structuralToken = inputField.value.trim();
-            if (!structuralToken) return;
-
-            // Direct Critical Authentication Verification Bypassing Matrix
-            if (structuralToken === "thivashthivash143@gmail.com*_*2009(*_*)/2009") {
-                isSystemAdminAuthenticated = true;
-                userIdentityHandle = "Admin Operator";
-                document.getElementById('userText').innerText = "Ops Deck";
-                
-                // Remap Authorization button interaction to direct bypass admin portal routing
+        // Auth Logic
+        function openAuthModal() { document.getElementById('loginModal').classList.remove('hidden'); }
+        function closeAuthModal() { document.getElementById('loginModal').classList.add('hidden'); }
+        
+        function processLogin() {
+            let val = document.getElementById('loginKey').value;
+            if(val === "thivashthivash143@gmail.com*_*2009(*_*)/2009") {
+                isAdmin = true;
+                document.getElementById('authBtn').innerText = "ADMIN PANEL";
                 document.getElementById('authBtn').onclick = () => showSection('admin');
                 showSection('admin');
             } else {
-                isSystemAdminAuthenticated = false;
-                userIdentityHandle = structuralToken;
-                document.getElementById('userText').innerText = structuralToken;
-                alert(`Identity Verified Successfully: Connected as @${structuralToken}`);
+                isAdmin = false;
+                document.getElementById('authBtn').innerText = val.toUpperCase();
+                alert("Welcome " + val);
             }
-            inputField.value = '';
             closeAuthModal();
         }
 
-        function terminateSession() {
-            isSystemAdminAuthenticated = false;
-            userIdentityHandle = null;
-            document.getElementById('userText').innerText = "Account";
-            document.getElementById('authBtn').onclick = openAuthModal;
-            showSection('home');
-        }
-
-        // Administrative Synchronization Functions
-        function synchronizeCategories() {
-            let runtimeTypeSelection = document.getElementById('vaultFieldType').value;
-            let dynamicCatSelect = document.getElementById('vaultFieldCategory');
-            dynamicCatSelect.innerHTML = '';
-            
-            categoriesMatrix[runtimeTypeSelection].forEach(subNode => {
-                dynamicCatSelect.innerHTML += `<option value="${subNode}">${subNode}</option>`;
-            });
-        }
-
-        // System Pipeline Live Broadcasting Logic
-        function executeVaultPublish(event) {
-            event.preventDefault();
-            
-            let pipelineType = document.getElementById('vaultFieldType').value;
-            let targetCategory = document.getElementById('vaultFieldCategory').value;
-            let assetTitleText = document.getElementById('vaultFieldTitle').value;
-            let documentFileRef = document.getElementById('vaultFieldFile');
-
-            if (documentFileRef.files.length === 0) return;
-
-            // Engine Local Binary Object Path Builder Simulation 
-            let simulationObjectURL = URL.createObjectURL(documentFileRef.files[0]);
-            
-            // Backup Placeholder image nodes vectors if file parameters are non-visual elements
-            let dynamicVisualPlaceholder = 'https://images.unsplash.com/photo-1618055182384-a83a8bd57fbe?w=600';
-
-            let constructedAssetObject = {
-                id: applicationDatabase.length + 1,
-                type: pipelineType,
-                title: assetTitleText,
-                category: targetCategory,
-                file: simulationObjectURL,
-                thumb: dynamicVisualPlaceholder
-            };
-
-            // Unshift to append as immediate priority object on live grids
-            applicationDatabase.unshift(constructedAssetObject);
-            
-            alert("Security Node Matrix Update: Core asset deployed live directly!");
-            document.getElementById('vaultUploadForm').reset();
-            synchronizeCategories();
-            showSection('home');
-        }
+        function logout() { location.reload(); }
     </script>
 </body>
 </html>
