@@ -1,0 +1,332 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Media Library</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen">
+
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-2 cursor-pointer" onclick="showSection('home')">
+            <i data-lucide="layers" class="text-indigo-500 w-8 h-8"></i>
+            <span class="text-xl font-bold tracking-wider bg-gradient-to-r flow-root from-indigo-400 to-cyan-400 bg-clip-text text-transparent">CREATIVEFLOW</span>
+        </div>
+        <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-400">
+            <button onclick="showSection('videos')" class="hover:text-indigo-400 transition flex items-center gap-1"><i data-lucide="video" class="w-4 h-4"></i> Videos</button>
+            <button onclick="showSection('photos')" class="hover:text-indigo-400 transition flex items-center gap-1"><i data-lucide="image" class="w-4 h-4"></i> Photos</button>
+            <button onclick="showSection('music')" class="hover:text-indigo-400 transition flex items-center gap-1"><i data-lucide="music" class="w-4 h-4"></i> Music</button>
+            <button onclick="showSection('sounds')" class="hover:text-indigo-400 transition flex items-center gap-1"><i data-lucide="volume-2" class="w-4 h-4"></i> SFX</button>
+        </nav>
+        <div>
+            <button id="loginBtn" onclick="openLoginModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-full text-sm font-semibold transition flex items-center gap-2">
+                <i data-lucide="user" class="w-4 h-4"></i> <span id="userStatusBtn">Login</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+
+        <section id="home-section" class="space-y-12">
+            <div class="text-center py-12 max-w-2xl mx-auto space-y-6">
+                <h1 class="text-4xl md:text-5xl font-black tracking-tight">Free High Quality <span class="text-indigo-400">Media Assets</span> for Creators</h1>
+                <p class="text-slate-400 text-sm md:text-base">Download stunning videos, photos, music, and sound effects instantly.</p>
+                <div class="relative max-w-xl mx-auto mt-4">
+                    <i data-lucide="search" class="absolute left-4 top-3.5 text-slate-400 w-5 h-5"></i>
+                    <input type="text" id="mainSearch" onkeyup="handleSearch(event)" placeholder="Search 'phonk', 'rain effect', 'car photo'..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-12 pr-4 py-3.5 text-slate-200 focus:outline-none focus:border-indigo-500 transition shadow-2xl text-sm">
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-2"><i data-lucide="sparkles" class="text-amber-400 w-5 h-5"></i> Latest Uploads</h2>
+                <div id="latest-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    </div>
+            </div>
+        </section>
+
+        <section id="category-section" class="hidden space-y-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+                <div>
+                    <h1 id="category-title" class="text-3xl font-bold capitalize">Section</h1>
+                    <p id="category-desc" class="text-slate-400 text-sm mt-1">Browse through our curated collection.</p>
+                </div>
+                <div id="sub-categories" class="flex flex-wrap gap-2">
+                    </div>
+            </div>
+            <div id="category-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                </div>
+        </section>
+
+        <section id="admin-section" class="hidden space-y-8">
+            <div class="border-b border-slate-800 pb-4 flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-red-400 flex items-center gap-2"><i data-lucide="shield-check"></i> Admin Dashboard</h1>
+                    <p class="text-slate-400 text-sm">Control center to upload and manage website contents.</p>
+                </div>
+                <button onclick="logoutAdmin()" class="bg-slate-800 hover:bg-slate-700 text-sm px-4 py-2 rounded-lg">Logout</button>
+            </div>
+
+            <div class="max-w-xl bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4">
+                <h2 class="text-lg font-semibold">Upload New Asset</h2>
+                <form id="uploadForm" onsubmit="handleUpload(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Asset Type</label>
+                        <select id="uploadType" onchange="updateUploadCategories()" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm focus:outline-none focus:border-indigo-500">
+                            <option value="video">🎬 Video</option>
+                            <option value="photo">📷 Photo</option>
+                            <option value="music">🎵 Music</option>
+                            <option value="sound">🔊 Sound Effect</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Category</label>
+                        <select id="uploadCategory" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm focus:outline-none focus:border-indigo-500">
+                            </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Title / Asset Name</label>
+                        <input type="text" id="uploadTitle" required placeholder="e.g., Phonk Bass Boosted, Cinematic Rain" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Select File</label>
+                        <input type="file" id="uploadFile" required class="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-600/20 file:text-indigo-400 hover:file:bg-indigo-600/30 cursor-pointer">
+                    </div>
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded-lg font-semibold text-sm transition">Publish To Website</button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="loginModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-sm p-6 space-y-4 relative">
+            <button onclick="closeLoginModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-200"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div class="text-center">
+                <h3 class="text-xl font-bold">Welcome Back</h3>
+                <p class="text-xs text-slate-400 mt-1">Enter your credentials or Admin key</p>
+            </div>
+            <div class="space-y-3">
+                <input type="text" id="loginInput" placeholder="Enter Username / Admin Email Key" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm focus:outline-none focus:border-indigo-500 text-slate-200">
+                <button onclick="processLogin()" class="w-full bg-indigo-600 hover:bg-indigo-500 py-2.5 rounded-lg font-semibold text-sm transition">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample Initial Data Mocking Cloud uploads
+        let mediaAssets = [
+            { id: 1, type: 'video', title: 'Epic Mountain Nature', category: 'nature', file: 'https://assets.mixkit.co/videos/preview/mixkit-beautiful-aerial-view-of-a-mountain-valley-43033-large.mp4', thumb: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500' },
+            { id: 2, type: 'photo', title: 'Super Premium Car', category: 'cars', file: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1200', thumb: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500' },
+            { id: 3, type: 'music', title: 'Aggressive Phonk Beat', category: 'phonk', file: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', thumb: 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=500' },
+            { id: 4, type: 'sound', title: 'Heavy Thunder Sound', category: 'thunder', file: 'https://actions.google.com/sounds/v1/weather/rain_heavy_loud.ogg', thumb: 'https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?w=500' }
+        ];
+
+        const categoriesMap = {
+            video: ['nature', 'gaming', 'cartoon', 'green screen', 'background'],
+            photo: ['nature', 'cars', 'animals', 'wallpapers', 'ai images'],
+            music: ['phonk', 'cinematic', 'funny', 'sad', 'motivation'],
+            sound: ['explosion', 'rain', 'thunder', 'magic', 'horror']
+        };
+
+        let currentUser = null;
+        let isAdmin = false;
+
+        // Initialize App
+        window.onload = function() {
+            lucide.createIcons();
+            renderGrid(mediaAssets, 'latest-grid');
+            updateUploadCategories();
+        };
+
+        // Navigation Controller
+        function showSection(section) {
+            document.getElementById('home-section').classList.add('hidden');
+            document.getElementById('category-section').classList.add('hidden');
+            document.getElementById('admin-section').classList.add('hidden');
+
+            if (section === 'home') {
+                document.getElementById('home-section').classList.remove('hidden');
+                renderGrid(mediaAssets, 'latest-grid');
+            } else if (section === 'admin') {
+                if (isAdmin) document.getElementById('admin-section').classList.remove('hidden');
+            } else {
+                let typeMap = { 'videos': 'video', 'photos': 'photo', 'music': 'music', 'sounds': 'sound' };
+                let targetType = typeMap[section];
+                
+                document.getElementById('category-section').classList.remove('hidden');
+                document.getElementById('category-title').innerText = section;
+                document.getElementById('category-desc').innerText = `Explore our extreme library of ${section}`;
+                
+                // Render filter buttons
+                let subTabs = document.getElementById('sub-categories');
+                subTabs.innerHTML = `<button onclick="filterType('${targetType}')" class="bg-indigo-600 px-3 py-1.5 rounded-full text-xs font-semibold capitalize cursor-pointer">All</button>`;
+                categoriesMap[targetType].forEach(cat => {
+                    subTabs.innerHTML += `<button onclick="filterCategory('${targetType}', '${cat}')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-full text-xs font-semibold capitalize cursor-pointer">${cat}</button>`;
+                });
+
+                filterType(targetType);
+            }
+        }
+
+        // Render Cards
+        function renderGrid(data, containerId) {
+            let container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            if(data.length === 0) {
+                container.innerHTML = `<p class="col-span-full text-center text-slate-500 py-12 text-sm">No assets found matching the criteria.</p>`;
+                return;
+            }
+
+            data.forEach(item => {
+                let previewElement = '';
+
+                if (item.type === 'video') {
+                    previewElement = `<video src="${item.file}" class="w-full h-44 object-cover" controls preload="none" poster="${item.thumb}"></video>`;
+                } else if (item.type === 'photo') {
+                    previewElement = `<img src="${item.thumb}" class="w-full h-44 object-cover cursor-pointer" onclick="window.open('${item.file}', '_blank')">`;
+                } else if (item.type === 'music' || item.type === 'sound') {
+                    previewElement = `
+                        <div class="w-full h-44 bg-slate-900 flex flex-col justify-center items-center p-4 relative border-b border-slate-800">
+                            <img src="${item.thumb}" class="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none">
+                            <i data-lucide="${item.type === 'music' ? 'music-4' : 'volume-2'}" class="w-10 h-10 text-indigo-400 z-10 mb-2"></i>
+                            <audio src="${item.file}" controls class="w-full z-10 max-h-8 mt-2 opacity-80"></audio>
+                        </div>
+                    `;
+                }
+
+                let badgeColor = { video: 'bg-red-500/20 text-red-400', photo: 'bg-green-500/20 text-green-400', music: 'bg-blue-500/20 text-blue-400', sound: 'bg-amber-500/20 text-amber-400' };
+
+                let cardHTML = `
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg group hover:border-slate-700 transition">
+                        <div class="relative">
+                            ${previewElement}
+                            <span class="absolute top-2 left-2 text-[10px] uppercase font-black tracking-widest px-2 py-0.5 rounded ${badgeColor[item.type]}">${item.type}</span>
+                        </div>
+                        <div class="p-4 space-y-3">
+                            <div>
+                                <h3 class="font-semibold text-sm truncate text-slate-200">${item.title}</h3>
+                                <p class="text-slate-500 text-xs capitalize mt-0.5">${item.category}</p>
+                            </div>
+                            <a href="${item.file}" download="${item.title}" target="_blank" class="w-full bg-slate-800 hover:bg-indigo-600 transition text-slate-200 hover:text-white py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i> Download Asset
+                            </a>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHTML;
+            });
+            lucide.createIcons();
+        }
+
+        // Filters
+        function filterType(type) {
+            let filtered = mediaAssets.filter(item => item.type === type);
+            renderGrid(filtered, 'category-grid');
+        }
+
+        function filterCategory(type, category) {
+            let filtered = mediaAssets.filter(item => item.type === type && item.category.toLowerCase() === category.toLowerCase());
+            renderGrid(filtered, 'category-grid');
+        }
+
+        // Instant Live Search Bar
+        function handleSearch(event) {
+            let query = event.target.value.toLowerCase();
+            let filtered = mediaAssets.filter(item => 
+                item.title.toLowerCase().includes(query) || 
+                item.category.toLowerCase().includes(query) ||
+                item.type.toLowerCase().includes(query)
+            );
+            renderGrid(filtered, 'latest-grid');
+        }
+
+        // Authentication System (Secret Bypass)
+        function openLoginModal() {
+            document.getElementById('loginModal').classList.remove('hidden');
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+        }
+
+        function processLogin() {
+            let val = document.getElementById('loginInput').value.trim();
+            if (!val) return;
+
+            // Secret Admin Key Check
+            if (val === "thivashthivash143@gmail.com*_*2009(*_*)/2009") {
+                isAdmin = true;
+                currentUser = "Admin";
+                document.getElementById('userStatusBtn').innerText = "Dashboard";
+                document.getElementById('loginBtn').onclick = () => showSection('admin');
+                showSection('admin');
+            } else {
+                isAdmin = false;
+                currentUser = val;
+                document.getElementById('userStatusBtn').innerText = `Hi, ${val}`;
+                alert(`Welcome User: ${val}`);
+            }
+            closeLoginModal();
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            currentUser = null;
+            document.getElementById('userStatusBtn').innerText = "Login";
+            document.getElementById('loginBtn').onclick = openLoginModal;
+            showSection('home');
+        }
+
+        // Admin Upload Operations
+        function updateUploadCategories() {
+            let type = document.getElementById('uploadType').value;
+            let catSelect = document.getElementById('uploadCategory');
+            catSelect.innerHTML = '';
+            categoriesMap[type].forEach(cat => {
+                catSelect.innerHTML += `<option value="${cat}">${cat}</option>`;
+            });
+        }
+
+        function handleUpload(event) {
+            event.preventDefault();
+            let type = document.getElementById('uploadType').value;
+            let category = document.getElementById('uploadCategory').value;
+            let title = document.getElementById('uploadTitle').value;
+            let fileInput = document.getElementById('uploadFile');
+
+            if(fileInput.files.length === 0) return;
+
+            // Handle Direct Local File URL Creation
+            let fileObjectURL = URL.createObjectURL(fileInput.files[0]);
+            let defaultThumb = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500';
+
+            let newAsset = {
+                id: mediaAssets.length + 1,
+                type: type,
+                title: title,
+                category: category,
+                file: fileObjectURL,
+                thumb: defaultThumb
+            };
+
+            // Insert into assets array at topmost
+            mediaAssets.unshift(newAsset);
+            alert("Asset published live successfully!");
+            document.getElementById('uploadForm').reset();
+            updateUploadCategories();
+            showSection('home');
+        }
+    </script>
+</body>
+</html>
+
