@@ -80,7 +80,7 @@
                 </div>
         </div>
 
-        <section id="admin-view" class="hidden space-y-8 animate-fade-in">
+        <section id="admin-view" class="hidden space-y-8">
             <div class="flex justify-between items-center border-b border-neutral-800 pb-4">
                 <h2 class="text-xl font-bold tracking-tight text-indigo-400">STUDIO MANAGEMENT CONTROL</h2>
                 <button onclick="location.reload()" class="text-xs text-red-500 font-bold bg-red-500/10 px-4 py-2 rounded-xl border border-red-500/20">LOGOUT</button>
@@ -145,15 +145,13 @@
     </div>
 
     <script>
-        // Default Sample Files with exact working sound/video
         let db = JSON.parse(localStorage.getItem('cf_studio_hub')) || [
             { id: 1, type: 'video', title: 'Cyberpunk City Drive', url: 'https://assets.mixkit.co/videos/preview/mixkit-neon-light-from-a-building-reflected-in-the-water-43187-large.mp4' },
             { id: 2, type: 'music', title: 'Hardcore Phonk Beat', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
             { id: 3, type: 'photo', title: 'Futuristic Hypercar', url: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?w=800' },
-            { id: 4, stroke: 'sound', type: 'sound', title: 'Cinematic Cinematic Drop', url: 'https://actions.google.com/sounds/v1/science_fiction/alien_beacon.ogg' }
+            { id: 4, type: 'sound', title: 'Cinematic Drop Effect', url: 'https://actions.google.com/sounds/v1/science_fiction/alien_beacon.ogg' }
         ];
 
-        // Banner Data Content
         const bannerData = {
             home: { tag: 'CREATIVE HUB', title: 'The Asset Multiverse', desc: 'Browse latest premium assets curated by studio experts.', img: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1600' },
             video: { tag: 'CINEMATIC CINEMA', title: 'Ultra HD Video Footage', desc: '4K background loops, green screens, and sound-enabled video mockups.', img: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600' },
@@ -171,10 +169,10 @@
             data.forEach(item => {
                 let mediaPreview = '';
                 if(item.type === 'video') {
-                    // Added "controls" so user can toggle volume/timeline directly for secure sound playback!
                     mediaPreview = `<video src="${item.url}" controls class="w-full aspect-video object-cover bg-black"></video>`;
                 } else if(item.type === 'photo') {
-                    mediaPreview = `<img src="${item.url}" class="w-full aspect-video object-cover">`;
+                    // 🔥 FIX: Added 'object-contain h-64 bg-neutral-950' to keep the full image aspect ratio visible!
+                    mediaPreview = `<div class="w-full h-64 bg-neutral-950 flex items-center justify-center"><img src="${item.url}" class="w-full h-full object-contain"></div>`;
                 } else {
                     mediaPreview = `
                     <div class="w-full aspect-video flex flex-col items-center justify-center bg-indigo-950/20 border-b border-neutral-900 p-4">
@@ -203,11 +201,9 @@
             document.getElementById('admin-view').classList.add('hidden');
             document.getElementById('content-area').classList.remove('hidden');
             
-            // Highlight Bottom Active Nav Tab
             document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.replace('text-indigo-500', 'text-gray-500'));
             document.getElementById(`nav-${section}`).classList.replace('text-gray-500', 'text-indigo-500');
 
-            // Update Dynamic Hero Banner Content & Images Layout
             const bConfig = bannerData[section];
             document.getElementById('banner-tag').innerText = bConfig.tag;
             document.getElementById('banner-title').innerText = bConfig.title;
