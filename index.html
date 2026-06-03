@@ -3,117 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CreativeFlow | Ultimate Media Engine</title>
+    <title>CreativeFlow Pro | The Studio Engine</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
-        body { font-family: 'Outfit', sans-serif; background: #020617; color: #f8fafc; }
-        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-        .gradient-border { border: 2px solid; border-image: linear-gradient(to right, #6366f1, #a855f7) 1; }
-        .card-hover:hover { transform: translateY(-5px); transition: all 0.3s ease; box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.4); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #050505; color: #e2e8f0; scroll-behavior: smooth; }
+        
+        .neo-glass {
+            background: rgba(15, 15, 15, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Video/Audio Card Overlay */
+        .media-card .overlay {
+            opacity: 0;
+            background: rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+        .media-card:hover .overlay { opacity: 1; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
+
+        .play-btn-center {
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .media-card:hover .play-btn-center { transform: scale(1); }
     </style>
 </head>
 <body class="min-h-screen">
 
-    <!-- 🌟 TOP NAVIGATION -->
-    <nav class="sticky top-0 z-50 glass border-b border-slate-800 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-2 cursor-pointer" onclick="showSection('home')">
-            <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/50">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+    <!-- 🧭 PREMIUM NAV -->
+    <nav class="sticky top-0 z-[100] neo-glass border-b border-white/5 px-8 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="showSection('home')">
+            <div class="p-2 bg-indigo-600 rounded-xl">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             </div>
-            <h1 class="text-2xl font-black tracking-tighter italic">CREATIVE<span class="text-indigo-500">FLOW</span></h1>
+            <span class="text-xl font-extrabold tracking-tighter uppercase text-white">Creative<span class="text-indigo-500">Flow</span></span>
         </div>
         
-        <div class="hidden md:flex gap-8 font-semibold text-sm uppercase tracking-widest text-slate-400">
-            <button onclick="showSection('video')" class="hover:text-indigo-400 transition">Videos</button>
-            <button onclick="showSection('photo')" class="hover:text-indigo-400 transition">Photos</button>
-            <button onclick="showSection('music')" class="hover:text-indigo-400 transition">Music</button>
-            <button onclick="showSection('sound')" class="hover:text-indigo-400 transition">SFX</button>
+        <div class="hidden md:flex items-center gap-8 text-[11px] font-black tracking-[0.2em] text-slate-400">
+            <button onclick="showSection('video')" class="hover:text-white transition">VIDEOS</button>
+            <button onclick="showSection('photo')" class="hover:text-white transition">PHOTOS</button>
+            <button onclick="showSection('music')" class="hover:text-white transition">MUSIC</button>
+            <button onclick="showSection('sound')" class="hover:text-white transition">SFX</button>
         </div>
 
-        <button id="authBtn" onclick="openAuthModal()" class="bg-slate-800 hover:bg-indigo-600 px-6 py-2 rounded-full text-sm font-bold transition">LOGIN</button>
+        <button id="authBtn" onclick="openAuthModal()" class="px-6 py-2 rounded-full border border-white/10 hover:bg-white hover:text-black transition text-xs font-bold">LOGIN</button>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-6 py-10">
+    <!-- 🏠 MAIN WRAPPER -->
+    <main class="max-w-7xl mx-auto px-6 py-12">
 
-        <!-- 🏠 HOME SECTION -->
-        <section id="home-view" class="space-y-16">
-            <!-- Hero with Search Box -->
-            <div class="text-center py-10 space-y-8">
-                <h2 class="text-5xl md:text-7xl font-extrabold tracking-tight">Design Everything. <br><span class="text-indigo-500 underline decoration-indigo-800">Download Anything.</span></h2>
-                <div class="relative max-w-2xl mx-auto shadow-2xl">
-                    <input type="text" id="mainSearch" onkeyup="searchAssets(this.value)" placeholder="Search for phonk, cars, nature, rain..." class="w-full bg-slate-900 border-2 border-slate-800 rounded-2xl px-6 py-5 text-lg focus:outline-none focus:border-indigo-500 transition">
-                    <div class="absolute right-4 top-4 bg-indigo-600 p-2 rounded-lg"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div>
+        <!-- HOME SECTION -->
+        <section id="home-view" class="space-y-20">
+            <div class="text-center space-y-8">
+                <h1 class="text-6xl md:text-8xl font-black tracking-tighter text-white">STUDIO <span class="text-indigo-600 italic">VAULT.</span></h1>
+                <div class="relative max-w-xl mx-auto">
+                    <input type="text" id="mainSearch" onkeyup="searchAssets(this.value)" placeholder="Search anything..." class="w-full bg-white/5 border border-white/10 rounded-2xl px-12 py-5 focus:outline-none focus:border-indigo-500 transition-all">
+                    <svg class="w-5 h-5 absolute left-4 top-5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </div>
             </div>
 
-            <!-- Recent Uploads Title -->
-            <div class="space-y-6">
-                <h3 class="text-2xl font-bold flex items-center gap-3"><span class="w-8 h-1 bg-indigo-500"></span> RECENT UPLOADS</h3>
-                <div id="home-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+            <div class="space-y-8">
+                <div class="flex items-center gap-4">
+                    <h2 class="text-sm font-black tracking-widest text-indigo-500 uppercase">Latest Assets</h2>
+                    <div class="h-[1px] flex-grow bg-white/5"></div>
+                </div>
+                <div id="home-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
             </div>
         </section>
 
-        <!-- 📂 CATEGORY SECTION -->
-        <section id="category-view" class="hidden space-y-8">
-            <h2 id="cat-title" class="text-4xl font-black uppercase italic">Category</h2>
-            <div id="cat-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+        <!-- LIBRARY VIEW -->
+        <section id="category-view" class="hidden space-y-10">
+            <div class="flex items-baseline justify-between border-b border-white/5 pb-6">
+                <h2 id="cat-title" class="text-5xl font-black uppercase italic text-white">Section</h2>
+                <p class="text-slate-500 font-medium text-sm">Sorted by Newest</p>
+            </div>
+            <div id="cat-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
         </section>
 
-        <!-- 🔐 ADMIN DASHBOARD -->
+        <!-- ADMIN PANEL -->
         <section id="admin-view" class="hidden space-y-12">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-6">
-                <h2 class="text-3xl font-black text-indigo-400 italic">ADMIN PANEL</h2>
-                <button onclick="logout()" class="text-red-400 font-bold hover:underline">LOGOUT</button>
+            <div class="flex justify-between items-center border-b border-white/10 pb-6">
+                <h2 class="text-3xl font-black text-indigo-500 italic">DASHBOARD</h2>
+                <button onclick="location.reload()" class="text-xs font-bold text-red-500 border border-red-500/20 px-4 py-2 rounded-lg">LOGOUT</button>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-10">
-                <!-- Upload Form -->
-                <div class="glass p-8 rounded-3xl space-y-6">
-                    <h3 class="text-xl font-bold">Upload New Content</h3>
-                    <div class="space-y-4">
-                        <select id="upType" onchange="loadCatOptions()" class="w-full bg-slate-800 p-4 rounded-xl outline-none">
+            <div class="grid lg:grid-cols-3 gap-10">
+                <!-- Upload -->
+                <div class="lg:col-span-1 neo-glass p-8 rounded-3xl space-y-6">
+                    <h3 class="font-bold flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M12 4v16m8-8H4"/></svg> Upload Asset</h3>
+                    <div class="space-y-4 text-sm">
+                        <select id="upType" onchange="loadCatOptions()" class="w-full bg-black border border-white/10 p-4 rounded-xl">
                             <option value="video">Video</option>
                             <option value="photo">Photo</option>
                             <option value="music">Music</option>
                             <option value="sound">Sound Effect</option>
                         </select>
-                        <select id="upCat" class="w-full bg-slate-800 p-4 rounded-xl outline-none"></select>
-                        <input type="text" id="upTitle" placeholder="Asset Title" class="w-full bg-slate-800 p-4 rounded-xl outline-none">
-                        <input type="file" id="upFile" class="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-indigo-600 file:text-white cursor-pointer">
-                        <button onclick="handleUpload()" class="w-full bg-indigo-600 py-4 rounded-xl font-black tracking-widest hover:bg-indigo-500 transition">PUBLISH LIVE</button>
+                        <select id="upCat" class="w-full bg-black border border-white/10 p-4 rounded-xl"></select>
+                        <input type="text" id="upTitle" placeholder="Title" class="w-full bg-black border border-white/10 p-4 rounded-xl">
+                        <input type="file" id="upFile" class="w-full text-[10px] text-slate-500 file:bg-indigo-600 file:text-white file:border-0 file:px-4 file:py-2 file:rounded-lg file:mr-4">
+                        <button onclick="handleUpload()" class="w-full bg-indigo-600 py-4 rounded-xl font-bold hover:bg-indigo-500 transition">PUBLISH</button>
                     </div>
                 </div>
 
-                <!-- Delete/Manage Section -->
-                <div class="glass p-8 rounded-3xl space-y-6">
-                    <h3 class="text-xl font-bold">Manage Assets (Delete)</h3>
-                    <div id="admin-manage-list" class="space-y-3 max-h-[400px] overflow-y-auto pr-2"></div>
+                <!-- Manage -->
+                <div class="lg:col-span-2 neo-glass p-8 rounded-3xl space-y-6">
+                    <h3 class="font-bold">Library Management</h3>
+                    <div id="admin-manage-list" class="space-y-3 overflow-y-auto max-h-[500px]"></div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- 🔑 LOGIN MODAL -->
-    <div id="loginModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center p-4 z-[100]">
-        <div class="glass max-w-md w-full p-10 rounded-3xl space-y-6 border-indigo-500/30">
+    <!-- AUTH MODAL -->
+    <div id="loginModal" class="hidden fixed inset-0 bg-black/95 backdrop-blur-xl z-[200] flex items-center justify-center p-6">
+        <div class="max-w-sm w-full space-y-8">
             <div class="text-center">
-                <h3 class="text-3xl font-black italic">LOGIN</h3>
-                <p class="text-slate-400 text-sm mt-2">Enter your name or admin secret key</p>
+                <h2 class="text-4xl font-black tracking-tighter text-white uppercase italic">Access Key</h2>
+                <p class="text-slate-500 text-xs mt-2 font-bold tracking-widest">USER OR ADMINISTRATOR</p>
             </div>
-            <input type="text" id="loginKey" placeholder="Your Name or Admin Email" class="w-full bg-slate-800 p-4 rounded-xl outline-none border border-slate-700 focus:border-indigo-500">
-            <button onclick="processLogin()" class="w-full bg-indigo-600 py-4 rounded-xl font-black tracking-widest">CONTINUE</button>
-            <button onclick="closeAuthModal()" class="w-full text-slate-500 text-sm">Cancel</button>
+            <input type="text" id="loginKey" placeholder="ID Handle" class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl outline-none focus:border-indigo-500 text-center text-xl font-bold">
+            <button onclick="processLogin()" class="w-full bg-white text-black py-5 rounded-2xl font-black tracking-widest hover:bg-indigo-500 hover:text-white transition-all">ENTER</button>
+            <button onclick="closeAuthModal()" class="w-full text-slate-500 text-xs font-bold">CANCEL</button>
         </div>
     </div>
 
     <script>
-        // Database
-        let db = JSON.parse(localStorage.getItem('mediaDB')) || [
-            { id: 1, type: 'video', title: 'Cinematic Nature', cat: 'Nature', url: 'https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4' },
-            { id: 2, type: 'photo', title: 'Sport Car Night', cat: 'Cars', url: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800' },
-            { id: 3, type: 'music', title: 'Hard Phonk Beat', cat: 'Phonk', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-            { id: 4, type: 'sound', title: 'Thunder Rain', cat: 'Rain', url: 'https://actions.google.com/sounds/v1/weather/rain_heavy_loud.ogg' }
+        // DB Init
+        let db = JSON.parse(localStorage.getItem('studio_db')) || [
+            { id: 1, type: 'video', title: 'Mountain Drift', cat: 'Nature', url: 'https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4' },
+            { id: 2, type: 'music', title: 'Phonk Killer', cat: 'Phonk', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+            { id: 3, type: 'photo', title: 'Cyber Car', cat: 'Cars', url: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800' }
         ];
 
         const cats = {
@@ -123,117 +148,160 @@
             sound: ['Explosion', 'Rain', 'Thunder', 'Magic', 'Horror']
         };
 
-        let isAdmin = false;
-
-        // Core Functions
         window.onload = () => { renderGrid(db, 'home-grid'); loadCatOptions(); };
 
-        function showSection(sec) {
-            ['home-view', 'category-view', 'admin-view'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            if(sec === 'home') {
-                document.getElementById('home-view').classList.remove('hidden');
-                renderGrid(db, 'home-grid');
-            } else if(sec === 'admin') {
-                document.getElementById('admin-view').classList.remove('hidden');
-                renderAdminList();
-            } else {
-                document.getElementById('category-view').classList.remove('hidden');
-                document.getElementById('cat-title').innerText = sec;
-                let filtered = db.filter(i => i.type === sec);
-                renderGrid(filtered, 'cat-grid');
-            }
-        }
-
+        // Render Engine
         function renderGrid(data, target) {
             const grid = document.getElementById(target);
             grid.innerHTML = '';
             data.forEach(item => {
-                let preview = '';
-                if(item.type === 'video') preview = `<video src="${item.url}" class="w-full h-48 object-cover"></video>`;
-                else if(item.type === 'photo') preview = `<img src="${item.url}" class="w-full h-48 object-cover">`;
-                else preview = `<div class="w-full h-48 bg-slate-800 flex items-center justify-center"><svg class="w-12 h-12 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 3v11a3 3 0 102 2.82V7.82l8-1.6V12a3 3 0 102 2.82V3z"/></svg></div>`;
+                let mediaHTML = '';
+                if(item.type === 'video') {
+                    mediaHTML = `
+                    <div class="relative group media-card rounded-2xl overflow-hidden aspect-video bg-zinc-900">
+                        <video id="v-${item.id}" src="${item.url}" class="w-full h-full object-cover"></video>
+                        <div class="overlay absolute inset-0 flex items-center justify-center">
+                            <button onclick="toggleVideo(${item.id})" class="play-btn-center bg-white p-4 rounded-full text-black">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M4.5 3.5v13L16 10 4.5 3.5z"/></svg>
+                            </button>
+                        </div>
+                    </div>`;
+                } else if(item.type === 'photo') {
+                    mediaHTML = `
+                    <div class="relative group media-card rounded-2xl overflow-hidden aspect-video">
+                        <img src="${item.url}" class="w-full h-full object-cover">
+                        <div class="overlay absolute inset-0 flex items-center justify-center">
+                            <a href="${item.url}" download class="bg-white p-4 rounded-full text-black">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            </a>
+                        </div>
+                    </div>`;
+                } else {
+                    mediaHTML = `
+                    <div class="relative group media-card rounded-2xl overflow-hidden aspect-video bg-zinc-900 flex items-center justify-center">
+                        <div class="text-indigo-500"><svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div>
+                        <div class="overlay absolute inset-0 flex items-center justify-center flex-col gap-2">
+                             <button onclick="toggleAudio(${item.id})" class="play-btn-center bg-white p-4 rounded-full text-black">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M4.5 3.5v13L16 10 4.5 3.5z"/></svg>
+                            </button>
+                            <audio id="a-${item.id}" src="${item.url}"></audio>
+                        </div>
+                    </div>`;
+                }
 
                 grid.innerHTML += `
-                    <div class="glass rounded-2xl overflow-hidden card-hover">
-                        ${preview}
-                        <div class="p-4 flex justify-between items-center">
-                            <div><p class="font-bold truncate w-32">${item.title}</p><p class="text-xs text-slate-500">${item.cat}</p></div>
-                            <a href="${item.url}" download class="bg-indigo-600 p-2 rounded-lg hover:scale-110 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></a>
+                    <div class="space-y-4">
+                        ${mediaHTML}
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-bold text-white text-sm">${item.title}</h4>
+                                <span class="text-[10px] text-slate-500 uppercase tracking-widest font-black">${item.cat}</span>
+                            </div>
+                            <a href="${item.url}" download class="text-slate-500 hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></a>
                         </div>
-                        ${item.type === 'music' || item.type === 'sound' ? `<audio src="${item.url}" controls class="w-full h-8 opacity-50 px-2 pb-2"></audio>` : ''}
                     </div>`;
             });
         }
 
-        function searchAssets(val) {
-            let filtered = db.filter(i => i.title.toLowerCase().includes(val.toLowerCase()) || i.cat.toLowerCase().includes(val.toLowerCase()));
+        // Logic: Only one play at a time
+        function stopAllMedia() {
+            document.querySelectorAll('video, audio').forEach(el => {
+                el.pause();
+                el.currentTime = 0;
+            });
+        }
+
+        function toggleVideo(id) {
+            let v = document.getElementById(`v-${id}`);
+            if(v.paused) { stopAllMedia(); v.play(); } else { v.pause(); }
+        }
+
+        function toggleAudio(id) {
+            let a = document.getElementById(`a-${id}`);
+            if(a.paused) { stopAllMedia(); a.play(); } else { a.pause(); }
+        }
+
+        // Search & Sections
+        function searchAssets(v) {
+            let filtered = db.filter(i => i.title.toLowerCase().includes(v.toLowerCase()));
             renderGrid(filtered, 'home-grid');
         }
 
-        // Admin Logic
+        function showSection(s) {
+            ['home-view', 'category-view', 'admin-view'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            if(s === 'home') {
+                document.getElementById('home-view').classList.remove('hidden');
+            } else if(s === 'admin') {
+                document.getElementById('admin-view').classList.remove('hidden');
+                renderAdminList();
+            } else {
+                document.getElementById('category-view').classList.remove('hidden');
+                document.getElementById('cat-title').innerText = s;
+                renderGrid(db.filter(i => i.type === s), 'cat-grid');
+            }
+        }
+
+        // Admin Engine
         function loadCatOptions() {
             let type = document.getElementById('upType').value;
-            let catSelect = document.getElementById('upCat');
-            catSelect.innerHTML = cats[type].map(c => `<option value="${c}">${c}</option>`).join('');
+            document.getElementById('upCat').innerHTML = cats[type].map(c => `<option value="${c}">${c}</option>`).join('');
         }
 
         function handleUpload() {
             let file = document.getElementById('upFile').files[0];
             let title = document.getElementById('upTitle').value;
-            if(!file || !title) return alert("Fill all details!");
-
-            let newItem = {
+            if(!file || !title) return;
+            
+            db.unshift({
                 id: Date.now(),
                 type: document.getElementById('upType').value,
                 cat: document.getElementById('upCat').value,
                 title: title,
                 url: URL.createObjectURL(file)
-            };
-            db.unshift(newItem);
-            localStorage.setItem('mediaDB', JSON.stringify(db));
-            alert("Uploaded successfully! Check Home Page.");
+            });
+            localStorage.setItem('studio_db', JSON.stringify(db));
+            alert('Live Published!');
             showSection('home');
+            renderGrid(db, 'home-grid');
         }
 
         function renderAdminList() {
-            let list = document.getElementById('admin-manage-list');
+            const list = document.getElementById('admin-manage-list');
             list.innerHTML = db.map(i => `
-                <div class="flex justify-between items-center bg-slate-900 p-4 rounded-xl border border-slate-800">
-                    <p class="text-sm font-bold truncate w-40">${i.title} (${i.type})</p>
-                    <button onclick="deleteAsset(${i.id})" class="text-rose-500 p-2 hover:bg-rose-500/10 rounded-lg transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+                <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-white/10 transition">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-indigo-600/20 rounded flex items-center justify-center text-indigo-500 font-bold text-[10px] uppercase">${i.type[0]}</div>
+                        <div><p class="text-sm font-bold">${i.title}</p><p class="text-[10px] text-slate-500">${i.cat}</p></div>
+                    </div>
+                    <button onclick="deleteAsset(${i.id})" class="text-red-500 hover:bg-red-500/10 p-3 rounded-xl transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </button>
                 </div>
             `).join('');
         }
 
         function deleteAsset(id) {
-            if(confirm("Are you sure to delete?")) {
+            if(confirm('Wipe this asset?')) {
                 db = db.filter(i => i.id !== id);
-                localStorage.setItem('mediaDB', JSON.stringify(db));
+                localStorage.setItem('studio_db', JSON.stringify(db));
                 renderAdminList();
-                renderGrid(db, 'home-grid');
             }
         }
 
-        // Auth Logic
+        // Auth
         function openAuthModal() { document.getElementById('loginModal').classList.remove('hidden'); }
         function closeAuthModal() { document.getElementById('loginModal').classList.add('hidden'); }
-        
         function processLogin() {
-            let val = document.getElementById('loginKey').value;
-            if(val === "thivashthivash143@gmail.com*_*2009(*_*)/2009") {
-                isAdmin = true;
-                document.getElementById('authBtn').innerText = "ADMIN PANEL";
+            let key = document.getElementById('loginKey').value;
+            if(key === "thivashthivash143@gmail.com*_*2009(*_*)/2009") {
+                document.getElementById('authBtn').innerText = "ADMIN";
                 document.getElementById('authBtn').onclick = () => showSection('admin');
                 showSection('admin');
             } else {
-                isAdmin = false;
-                document.getElementById('authBtn').innerText = val.toUpperCase();
-                alert("Welcome " + val);
+                document.getElementById('authBtn').innerText = key.toUpperCase();
             }
             closeAuthModal();
         }
-
-        function logout() { location.reload(); }
     </script>
 </body>
 </html>
